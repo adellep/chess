@@ -12,10 +12,10 @@ public class BishopMoves {
 
         var piece = board.getPiece(myPosition);
         if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
-            getBishopMove(moves, myPosition, myPosition, +1, -1, true, board);
-            getBishopMove(moves, myPosition, myPosition, +1, +1, true, board);
-            getBishopMove(moves, myPosition, myPosition, -1, -1, true, board);
-            getBishopMove(moves, myPosition, myPosition, -1, +1, true, board);
+            getBishopMove(moves, myPosition, myPosition, +1, -1, board);
+            getBishopMove(moves, myPosition, myPosition, +1, +1, board);
+            getBishopMove(moves, myPosition, myPosition, -1, -1, board);
+            getBishopMove(moves, myPosition, myPosition, -1, +1, board);
         }
 
         return moves;
@@ -26,7 +26,7 @@ public class BishopMoves {
         int row = pos.getRow();
         int col = pos.getColumn();
 
-        return row >= 0 && row <= 8 && col >= 0 && col <= 8;
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
 
     //if piece is in square and friendly
@@ -44,23 +44,26 @@ public class BishopMoves {
 
 
     void getBishopMove(Collection<ChessMove> moves, ChessPosition origPos,
-                                     ChessPosition pos, int rowDir, int colDir, boolean keepGoing, ChessBoard board) {
-        if (isRealSquare(pos)) { //if square exists on board
-            var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
+                                     ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
 
-            if(isEnemy(origPos, newPos, board)) {
-                moves.add(new ChessMove(origPos, newPos, null)); //eat enemy and must stop
-                keepGoing = false;
-            } else if (board.getPiece(newPos) == null) { //no piece so add position
-                moves.add(new ChessMove(origPos, newPos, null));
-            } else {
-                keepGoing = false; //stop if there is team color piece in square
-            }
+        var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
+        if (!isRealSquare(newPos)) { //if square exists on board
+            return;
+        }
+
+        boolean keepGoing = true;
+        if(isEnemy(origPos, newPos, board)) {
+            moves.add(new ChessMove(origPos, newPos, null)); //eat enemy and must stop
+            keepGoing = false;
+        } else if (board.getPiece(newPos) == null) { //no piece so add position
+            moves.add(new ChessMove(origPos, newPos, null));
+        } else {
+            keepGoing = false; //stop if there is team color piece in square
+        }
 
 
-            if (keepGoing) { //if no piece
-                getBishopMove(moves, origPos, newPos, rowDir, colDir, keepGoing, board);
-            }
+        if (keepGoing) { //if no piece
+            getBishopMove(moves, origPos, newPos, rowDir, colDir, board);
         }
     }
 }
