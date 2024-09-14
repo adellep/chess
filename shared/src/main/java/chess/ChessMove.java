@@ -8,7 +8,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessMove { //can be record class
+public class ChessMove {
 
     private final ChessPosition startPosition;
     private final ChessPosition endPosition;
@@ -46,7 +46,7 @@ public class ChessMove { //can be record class
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) { //my generated equals() and hashCode() do not look like example slides
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove = (ChessMove) o;
@@ -57,4 +57,13 @@ public class ChessMove { //can be record class
     public int hashCode() {
         return Objects.hash(startPosition, endPosition, promotionPiece);
     }
+
+//    @Override
+//    public String toString() {
+//        return "ChessMove{" +
+//                "startPosition=" + startPosition +
+//                ", endPosition=" + endPosition +
+//                ", promotionPiece=" + promotionPiece +
+//                '}';
+//    }
 }
