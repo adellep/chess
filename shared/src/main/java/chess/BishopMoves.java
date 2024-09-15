@@ -11,7 +11,7 @@ public class BishopMoves {
         var moves = new ArrayList<ChessMove>();
 
         var piece = board.getPiece(myPosition);
-        if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
+        if (piece.getPieceType() == ChessPiece.PieceType.BISHOP) { //put this in helper class so that i only need to call funtion once
             getBishopMove(moves, myPosition, myPosition, +1, -1, board);
             getBishopMove(moves, myPosition, myPosition, +1, +1, board);
             getBishopMove(moves, myPosition, myPosition, -1, -1, board);
@@ -45,7 +45,7 @@ public class BishopMoves {
 
     void getBishopMove(Collection<ChessMove> moves, ChessPosition origPos,
                                      ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
-
+        //pay attention to the order of if statements
         var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
         if (!isRealSquare(newPos)) { //if square exists on board
             return;
