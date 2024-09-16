@@ -5,17 +5,26 @@ import java.util.Collection;
 
 public class PawnMoves {
 
-    public Collection<ChessMove> pieceMoves (ChessBoard board, ChessPosition myPosition) {
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         var moves = new ArrayList<ChessMove>();
 
         var piece = board.getPiece(myPosition);
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            getPawnMove(moves, myPosition, myPosition, +1, 0, board);
-            //getPawnMove(moves, myPosition, myPosition, +2, 0, board); //for 1st turn
+            if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                getPawnMove(moves, myPosition, myPosition, +1, 0, board);
+                if (isFirstTurnWhite(myPosition, board)) {
+                    getPawnMove(moves, myPosition, myPosition, +2, 0, board); //for 1st turn
+                }
+            }
+            if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                getPawnMove(moves, myPosition, myPosition, -1, 0, board);
+                if (isFirstTurnBlack(myPosition, board)) {
+                    getPawnMove(moves, myPosition, myPosition, -2, 0, board);
+                }
+            }
             //getPawnMove(moves, myPosition, myPosition, +1, -1, board); //attack left diagonal
             //getPawnMove(moves, myPosition, myPosition, +1, +1, board); //attack right diagonal
         }
-
         return moves;
     }
 
@@ -37,23 +46,27 @@ public class PawnMoves {
         return pieceNewPos.getTeamColor() != pieceOrigPos.getTeamColor();
     }
 
-    boolean isFirstTurn(ChessPosition pos,  ChessBoard board) {
+    boolean isFirstTurnWhite(ChessPosition pos, ChessBoard board) {
         ChessPiece pieceOrigPos = board.getPiece(pos);
 
-        if (pos.getRow() == 2 && pieceOrigPos.getTeamColor() == ChessGame.TeamColor.WHITE) {
-            return true;
+        if (pieceOrigPos.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (pos.getRow() == 2 && pieceOrigPos.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                return true;
+            }
         }
-        else if (pos.getRow() == 7 && pieceOrigPos.getTeamColor() == ChessGame.TeamColor.BLACK) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return false;
     }
 
-//    boolean endOfBoard(ChessPosition pos, ChessBoard board) {
-//
-//    }
+    boolean isFirstTurnBlack(ChessPosition pos, ChessBoard board) {
+        ChessPiece pieceOrigPos = board.getPiece(pos);
+
+        if (pieceOrigPos.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (pos.getRow() == 7 && pieceOrigPos.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     void getPawnMove(Collection<ChessMove> moves, ChessPosition origPos,
                   ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
@@ -65,9 +78,9 @@ public class PawnMoves {
 //        if(isFirstTurn(origPos, board)) {
 //
 //        }
-        if (isEnemy(origPos, newPos, board)) {
-            moves.add(new ChessMove(origPos, newPos, null)); //will have to change null
-        }
+//        if (isEnemy(origPos, newPos, board)) {
+//            moves.add(new ChessMove(origPos, newPos, null)); //will have to change null
+//        }
         else if (board.getPiece(newPos) == null) {
             moves.add(new ChessMove(origPos, newPos, null)); //will have to change null
         }
