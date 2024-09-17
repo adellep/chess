@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] squares = new ChessPiece[8][8]; //class code
+    private ChessPiece[][] squares = new ChessPiece[8][8];
 
     public ChessBoard() {
         //code
@@ -43,7 +43,6 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() { //be careful with index and length of board
-        //throw new RuntimeException("Not implemented");
         squares = new ChessPiece[8][8];
 
         for (int col = 0; col < 8; col++) {
@@ -84,5 +83,13 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(squares);
+    }
+
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "squares=" + Arrays.toString(squares) +
+                '}';
     }
 }

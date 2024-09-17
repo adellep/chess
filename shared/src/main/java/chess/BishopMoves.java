@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class BishopMoves {
-    //make bishopcalculator method static*** to not have to make a new object
-    //I made BishopMoves an object, could add a superclass later to not have code repeat so often
+    //I made BishopMoves an object, should make a superclass or interface later to not have code repeat so often
 
     public  Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         var moves = new ArrayList<ChessMove>();
