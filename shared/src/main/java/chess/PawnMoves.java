@@ -12,6 +12,9 @@ public class PawnMoves {
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) { //positives
                 getPawnMove(moves, myPosition, myPosition, +1, 0, board);
+                getPawnMove(moves, myPosition, myPosition, +1, -1, board);
+                getPawnMove(moves, myPosition, myPosition, +1, +1, board);
+
                 if (isFirstTurnWhite(myPosition, board) && !isBlocked(myPosition, +1, board)
                         && !isBlocked(myPosition, +2, board)) {
                     getPawnMove(moves, myPosition, myPosition, +2, 0, board); //for 1st turn
@@ -19,6 +22,9 @@ public class PawnMoves {
             }
             if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) { //negatives
                 getPawnMove(moves, myPosition, myPosition, -1, 0, board);
+                getPawnMove(moves, myPosition, myPosition, -1, -1, board);
+                getPawnMove(moves, myPosition, myPosition, -1, +1, board);
+
                 if (isFirstTurnBlack(myPosition, board) && !isBlocked(myPosition, -1, board)
                         && !isBlocked(myPosition, -2, board)) {
                     getPawnMove(moves, myPosition, myPosition, -2, 0, board);
@@ -80,11 +86,20 @@ public class PawnMoves {
         if (!isRealSquare(newPos)) {
             return;
         }
-        if (board.getPiece(newPos) != null) {
-            return;
+//        if (board.getPiece(newPos) != null) {
+//            return;
+//        }
+//        else if (board.getPiece(newPos) == null) {
+//            moves.add(new ChessMove(origPos, newPos, null)); //will have to change null
+//        }
+        ChessPiece pieceNewPos = board.getPiece(newPos);
+        if (colDir == 0) { //only moving forward
+            if (pieceNewPos == null) {
+                moves.add(new ChessMove(origPos, newPos, null));
+            }
         }
-        else if (board.getPiece(newPos) == null) {
-            moves.add(new ChessMove(origPos, newPos, null)); //will have to change null
+        else if (isEnemy(origPos, newPos, board)) {
+            moves.add(new ChessMove(origPos, newPos, null));
         }
     }
 }
