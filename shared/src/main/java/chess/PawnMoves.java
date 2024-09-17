@@ -30,8 +30,6 @@ public class PawnMoves {
                     getPawnMove(moves, myPosition, myPosition, -2, 0, board);
                 }
             }
-            //getPawnMove(moves, myPosition, myPosition, +1, -1, board); //attack left diagonal
-            //getPawnMove(moves, myPosition, myPosition, +1, +1, board); //attack right diagonal
         }
         return moves;
     }
@@ -86,20 +84,29 @@ public class PawnMoves {
         if (!isRealSquare(newPos)) {
             return;
         }
-//        if (board.getPiece(newPos) != null) {
-//            return;
-//        }
-//        else if (board.getPiece(newPos) == null) {
-//            moves.add(new ChessMove(origPos, newPos, null)); //will have to change null
-//        }
+
         ChessPiece pieceNewPos = board.getPiece(newPos);
         if (colDir == 0) { //only moving forward
             if (pieceNewPos == null) {
-                moves.add(new ChessMove(origPos, newPos, null));
+                if (newPos.getRow() == 8 || newPos.getRow() == 1) {
+                    moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.KNIGHT));
+                    moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.BISHOP));
+                    moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.ROOK));
+                    moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.QUEEN));
+                } else {
+                    moves.add(new ChessMove(origPos, newPos, null));
+                }
             }
         }
         else if (isEnemy(origPos, newPos, board)) {
-            moves.add(new ChessMove(origPos, newPos, null));
+            if (newPos.getRow() == 8 || newPos.getRow() == 1) {
+                moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.KNIGHT));
+                moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.BISHOP));
+                moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.ROOK));
+                moves.add(new ChessMove(origPos, newPos, ChessPiece.PieceType.QUEEN));
+            } else {
+                moves.add(new ChessMove(origPos, newPos, null));
+            }
         }
     }
 }
