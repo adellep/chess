@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class ChessPosition {
 
-    private final int row; //final = cannot be changed
+    private final int row;
     private final int col;
 
     public ChessPosition(int row, int col) {
@@ -32,11 +32,6 @@ public class ChessPosition {
      */
     public int getColumn() {
         return col;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[%s, %s]", getRow(), getColumn());
     }
 
     @Override

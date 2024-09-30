@@ -46,7 +46,7 @@ public class ChessMove {
     }
 
     @Override
-    public boolean equals(Object o) { //my generated equals() and hashCode() do not look like example slides
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove = (ChessMove) o;
@@ -56,14 +56,5 @@ public class ChessMove {
     @Override
     public int hashCode() {
         return Objects.hash(startPosition, endPosition, promotionPiece);
-    }
-
-    @Override
-    public String toString() {
-        return "ChessMove{" +
-                "startPosition=" + startPosition +
-                ", endPosition=" + endPosition +
-                ", promotionPiece=" + promotionPiece +
-                '}';
     }
 }

@@ -55,26 +55,28 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-       Collection<ChessMove> moves = new ArrayList<>(); //do I have to initialize this
-       var piece = board.getPiece(myPosition);
-       if(piece.getPieceType() == PieceType.BISHOP) {
-           moves = new BishopMoves().pieceMoves(board, myPosition);
-       }
-       if(piece.getPieceType() == PieceType.ROOK) {
-           moves = new RookMoves().pieceMoves(board, myPosition);
-       }
-       if (piece.getPieceType() == PieceType.QUEEN) {
-           moves = new QueenMoves().pieceMoves(board, myPosition);
-       }
-       if (piece.getPieceType() == PieceType.KING) {
-           moves = new KingMoves().pieceMoves(board, myPosition);
-       }
-       if (piece.getPieceType() == PieceType.KNIGHT) {
-           moves = new KnightMoves().pieceMoves(board, myPosition);
-       }
-       if (piece.getPieceType() == PieceType.PAWN) {
-           moves = new PawnMoves().pieceMoves(board, myPosition);
-       }
+        Collection<ChessMove> moves = new ArrayList<>();
+
+        var piece = board.getPiece(myPosition);
+        if (piece.getPieceType() == PieceType.BISHOP) {
+            moves = new BishopMoves().moves(board, myPosition);
+        }
+        if (piece.getPieceType() == PieceType.ROOK) {
+            moves = new RookMoves().moves(board, myPosition);
+        }
+        if (piece.getPieceType() == PieceType.QUEEN) {
+            moves = new BishopMoves().moves(board, myPosition);
+            moves.addAll(new RookMoves().moves(board, myPosition));
+        }
+        if (piece.getPieceType() == PieceType.KING) {
+            moves = new KingMoves().moves(board, myPosition);
+        }
+        if (piece.getPieceType() == PieceType.KNIGHT) {
+            moves = new KnightMoves().moves(board, myPosition);
+        }
+        if (piece.getPieceType() == PieceType.PAWN) {
+            moves = new PawnMoves().moves(board, myPosition);
+        }
 
         return moves;
     }
