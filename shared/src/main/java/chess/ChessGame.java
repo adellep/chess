@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -113,8 +114,63 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
+    //Returns true if the given team has no way to protect their king from being captured
+    //no valid moves and is in check
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (!isInCheck(teamColor)) {
+            return false;
+        }
+
+        Collection<ChessPiece> teamPieces = getTeamPieces(teamColor);
+        for (ChessPiece piece : teamPieces) {
+            ChessPosition piecePos = getPosition(piece);
+            Collection<ChessMove> moves = piece.pieceMoves(board, piecePos);
+
+            for (ChessMove move : moves) {
+                ChessPiece target = board.getPiece(move.getEndPosition());
+                board.addPiece(move.getEndPosition(), piece); //move piece
+                board.addPiece(piecePos, null); //clear old pos
+
+                boolean stillChecked = isInCheck(teamColor);
+
+                board.addPiece(piecePos, piece); //put in orig pos
+                board.addPiece(move.getEndPosition(), target); //put target back
+
+                if (!stillChecked) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private Collection<ChessPiece> getTeamPieces(TeamColor teamColor) {
+        Collection<ChessPiece> pieces = new ArrayList<>();
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(pos);
+
+                if (piece != null && piece.getTeamColor() == teamColor) {
+                    pieces.add(piece);
+                }
+            }
+        }
+        return pieces;
+    }
+
+    private ChessPosition getPosition(ChessPiece piece) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+
+                if (board.getPiece(pos) == piece) {
+                    return pos;
+                }
+            }
+        }
+        return null;
     }
 
     /**
