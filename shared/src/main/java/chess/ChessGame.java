@@ -127,14 +127,14 @@ public class ChessGame {
             Collection<ChessMove> moves = piece.pieceMoves(board, piecePos);
 
             for (ChessMove move : moves) {
-                ChessPiece target = board.getPiece(move.getEndPosition());
+                ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
                 board.addPiece(move.getEndPosition(), piece); //move piece
                 board.addPiece(piecePos, null); //clear old pos
 
                 boolean stillChecked = isInCheck(teamColor);
 
                 board.addPiece(piecePos, piece); //put in orig pos
-                board.addPiece(move.getEndPosition(), target); //put target back
+                board.addPiece(move.getEndPosition(), capturedPiece); //put captured back
 
                 if (!stillChecked) {
                     return false;
@@ -180,8 +180,32 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
+    //Returns true if the given team has no legal moves but their king is not in immediate danger
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+        Collection<ChessPiece> teamPieces = getTeamPieces(teamColor);
+        for (ChessPiece piece : teamPieces) {
+            ChessPosition piecePos = getPosition(piece);
+            Collection<ChessMove> moves = piece.pieceMoves(board, piecePos);
+
+            for (ChessMove move : moves) {
+                ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
+                board.addPiece(move.getEndPosition(), piece);
+                board.addPiece(piecePos, null);
+
+                boolean nowIsChecked = isInCheck(teamColor);
+
+                board.addPiece(piecePos, piece);
+                board.addPiece(move.getEndPosition(), capturedPiece);
+
+                if (!nowIsChecked) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
