@@ -87,8 +87,18 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
+    //receives a given move and executes it, provided it is a legal move.
+    //if illegal, it throws an InvalidMoveException.
+    //move is illegal if it is not a "valid" move for the piece at the starting location,
+    //or if it’s not the corresponding team's turn.
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+            ChessPosition startPos = move.getStartPosition();
+            ChessPiece piece = board.getPiece(startPos);
+            TeamColor teamColorTurn = piece.getTeamColor();
+
+            if (teamColorTurn != teamTurn) {
+                throw new InvalidMoveException("Not your turn");
+            }
     }
 
     /**
