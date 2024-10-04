@@ -92,21 +92,30 @@ public class ChessGame {
     //move is illegal if it is not a "valid" move for the piece at the starting location,
     //or if it’s not the corresponding team's turn.
     public void makeMove(ChessMove move) throws InvalidMoveException {
-            ChessPosition startPos = move.getStartPosition();
-            ChessPiece piece = board.getPiece(startPos);
-            //TeamColor teamColorTurn = piece.getTeamColor();
+        ChessPosition startPos = move.getStartPosition();
+        ChessPiece piece = board.getPiece(startPos);
 
-            if (piece == null) {
-                throw new InvalidMoveException("No piece at position");
-            }
-            if (piece.getTeamColor() != teamTurn) {
-                throw new InvalidMoveException("Not your turn");
-            }
+        if (piece == null) {
+            throw new InvalidMoveException("No piece at position");
+        }
+        if (piece.getTeamColor() != teamTurn) {
+            throw new InvalidMoveException("Not your turn");
+        }
 
-            Collection<ChessMove> validMoves = validMoves(startPos);
-            if (!validMoves.contains(move)) {
-                throw new InvalidMoveException("Invalid move for piece");
-            }
+        Collection<ChessMove> validMoves = validMoves(startPos);
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("Invalid move for piece");
+        }
+
+        ChessPosition endPos = move.getEndPosition();
+        board.addPiece(endPos, piece); //move piece
+        board.addPiece(startPos, null); //make old pos empty
+
+        if (teamTurn == TeamColor.WHITE) {
+            teamTurn = TeamColor.BLACK;
+        } else {
+            teamTurn = TeamColor.WHITE;
+        }
     }
 
     /**
