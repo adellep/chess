@@ -111,6 +111,14 @@ public class ChessGame {
         board.addPiece(endPos, piece); //move piece
         board.addPiece(startPos, null); //make old pos empty
 
+        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+            if (endPos.getRow() == 1 || endPos.getRow() == 8) {
+                ChessPiece promotedPawn = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+                board.addPiece(endPos, null);
+                board.addPiece(endPos, promotedPawn);
+            }
+        }
+
         if (teamTurn == TeamColor.WHITE) {
             teamTurn = TeamColor.BLACK;
         } else {
