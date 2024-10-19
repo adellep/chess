@@ -1,5 +1,6 @@
 import chess.*;
 import server.Server;
+import service.Service;
 import spark.Spark;
 
 public class Main {
@@ -10,5 +11,6 @@ public class Main {
         var server = new Server();
         var port = server.run(8080);
 
+        System.out.println("Chess Server: " + port);
     }
 }
