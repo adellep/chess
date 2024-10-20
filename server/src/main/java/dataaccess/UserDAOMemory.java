@@ -2,12 +2,19 @@ package dataaccess;
 
 import model.AuthData;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserDAOMemory implements UserDAO {
 
     final private Map<String, UserData> users = new HashMap<>();
+
+    @Override
+    public void clear() throws DataAccessException {
+        users.clear();
+    }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {

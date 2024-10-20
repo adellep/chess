@@ -5,6 +5,7 @@ import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 
 public interface UserDAO {
+    void clear() throws DataAccessException;
     UserData getUser(String username) throws DataAccessException;
     void addUser(UserData userData);
     UserData createUser(UserData userData) throws DataAccessException;
