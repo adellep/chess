@@ -1,5 +1,9 @@
 package service;
 
+import dataaccess.DataAccessException;
+import dataaccess.UserDAOMemory;
+import model.AuthData;
+import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +24,18 @@ public class DataAccessTest {
         var clearService = new ClearService();
         var result = clearService.clear();
         Assertions.assertNull(result.message());
+    }
 
+    @Test
+    public void registerUser() throws DataAccessException {
+        var userDao = new UserDAOMemory();
+        var userService = new UserService();
+        var expected = new UserData("a", "p", "a@a.com");
+        AuthData authData = userService.register(expected);
+        var actual = userDao.getUser("a");
+
+
+        Assertions.assertNotNull(authData);
+        Assertions.assertEquals(expected, actual);
     }
 }
