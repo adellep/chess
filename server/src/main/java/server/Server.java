@@ -1,11 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.UserDAO;
 import dataaccess.UserDAOMemory;
 import model.UserData;
 import service.*;
-import service.Service;
 import spark.*;
 
 public class Server {
@@ -52,7 +50,7 @@ public class Server {
         //return "{ username:, password:, email: }";
 //        var x = s.registerUser(newUser);
 //        return g.toJson(x);
-        var userService = new UserService();
+        var userService = new UserService(new UserDAOMemory());
         var authData = userService.register(newUser);
 
         if (authData != null) {
@@ -62,6 +60,7 @@ public class Server {
             res.status(403);
             return g.toJson(new ClearResult("Error : already taken"));
         }
+        //2 other errors: 400 and 500
 
     }
 

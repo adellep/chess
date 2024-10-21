@@ -29,11 +29,10 @@ public class DataAccessTest {
     @Test
     public void registerUser() throws DataAccessException {
         var userDao = new UserDAOMemory();
-        var userService = new UserService();
+        var userService = new UserService(userDao);
         var expected = new UserData("a", "p", "a@a.com");
         AuthData authData = userService.register(expected);
         var actual = userDao.getUser("a");
-
 
         Assertions.assertNotNull(authData);
         Assertions.assertEquals(expected, actual);
