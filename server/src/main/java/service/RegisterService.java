@@ -24,7 +24,7 @@ public class RegisterService {
 
         if (request.username() == null || request.password() == null || request.email() == null ||
                 request.username().isEmpty() || request.password().isEmpty() || request.email().isEmpty()) {
-            throw new ResponseException(400, "Error: bad request"); //can i put error message here instead of server?
+            throw new ResponseException(400, "Error: bad request");
         }
 
         try {

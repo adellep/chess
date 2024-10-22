@@ -13,15 +13,15 @@ public class ClearService {
         this.authDAO = new AuthDAOMemory();
     }
 
-    public ClearResult clear() {
+    public ResultMessage clear() {
         try {
             userDAO.clear();
             gameDAO.clear();
             authDAO.clear();
 
-            return new ClearResult(null);
+            return new ResultMessage(null);
         } catch (Exception ex) {
-            return new ClearResult("not cleared");
+            return new ResultMessage("not cleared");
         }
     }
 }

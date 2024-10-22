@@ -28,7 +28,6 @@ public class LoginService {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 
-            //String authToken = "1234";
             String authToken = generateToken();
             AuthData authData = new AuthData(authToken, foundUser.username());
             authDAO.createAuth(authData);
