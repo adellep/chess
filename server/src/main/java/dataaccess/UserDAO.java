@@ -9,5 +9,5 @@ public interface UserDAO {
     UserData getUser(String username) throws DataAccessException;
     void addUser(UserData userData);
     UserData createUser(UserData userData) throws DataAccessException;
-    UserData createAuth(AuthData authData) throws DataAccessException;
+    //UserData createAuth(AuthData authData) throws DataAccessException;
 }

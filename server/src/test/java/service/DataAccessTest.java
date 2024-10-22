@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.AuthDAOMemory;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
@@ -29,12 +30,16 @@ public class DataAccessTest {
     @Test
     public void registerUser() throws DataAccessException {
         var userDao = new UserDAOMemory();
-        var userService = new UserService(userDao);
-        var expected = new UserData("a", "p", "a@a.com");
-        AuthData authData = userService.register(expected);
-        var actual = userDao.getUser("a");
+        var authDao = new AuthDAOMemory();
+        //var userService = new UserService(userDao);
+        var registerService = new RegisterService(userDao, authDao);
+        var req = new RegisterRequest("a", "p", "a@a.com");
+        //AuthData authData = userService.register(expected);
+        var res = registerService.register(req);
 
-        Assertions.assertNotNull(authData);
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertNotNull(res);
+        Assertions.assertEquals("a", res.username());
+        Assertions.assertNotNull(res.authToken());
+        Assertions.assertNotNull(userDao.getUser("a"));
     }
 }

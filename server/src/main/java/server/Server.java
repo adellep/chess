@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import dataaccess.AuthDAOMemory;
 import dataaccess.UserDAOMemory;
 import model.UserData;
 import service.*;
@@ -20,7 +21,6 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::createUser); //was lambda function
-
         Spark.delete("/db", this::clear); //clear() //(req, response) -> "{}"
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -46,16 +46,17 @@ public class Server {
 
     private String createUser(Request req, Response res) {
         var g = new Gson();
-        var newUser = g.fromJson(req.body(), UserData.class);
-        //return "{ username:, password:, email: }";
-//        var x = s.registerUser(newUser);
-//        return g.toJson(x);
-        var userService = new UserService(new UserDAOMemory());
-        var authData = userService.register(newUser);
+        var newUser = g.fromJson(req.body(), RegisterRequest.class);
 
-        if (authData != null) {
+        RegisterService registerService = new RegisterService(new UserDAOMemory(), new AuthDAOMemory());
+        var result = registerService.register(newUser);
+        //var userService = new UserService(new UserDAOMemory());
+
+        //var authData = RegisterService.register(newUser);
+
+        if (result != null) {
             res.status(200);
-            return g.toJson(new RegisterResult(newUser.username(), authData.authToken()));
+            return g.toJson(result);
         } else {
             res.status(403);
             return g.toJson(new ClearResult("Error : already taken"));

@@ -13,4 +13,11 @@ public class AuthDAOMemory implements  AuthDAO {
     public void clear() throws DataAccessException {
         tokens.clear();
     }
+
+    @Override
+    public AuthData createAuth(AuthData authData) throws DataAccessException {
+        tokens.put(authData.username(), authData);
+
+        return authData;
+    }
 }

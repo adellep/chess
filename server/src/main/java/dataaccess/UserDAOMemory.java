@@ -31,8 +31,8 @@ public class UserDAOMemory implements UserDAO {
         return null;
     }
 
-    @Override
-    public UserData createAuth(AuthData authData) throws DataAccessException {
-        return null;
-    }
+//    @Override
+//    public UserData createAuth(AuthData authData) throws DataAccessException {
+//        return null;
+//    }
 }
