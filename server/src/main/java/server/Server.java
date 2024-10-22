@@ -47,22 +47,33 @@ public class Server {
     private String createUser(Request req, Response res) {
         var g = new Gson();
         var newUser = g.fromJson(req.body(), RegisterRequest.class);
-
         RegisterService registerService = new RegisterService(new UserDAOMemory(), new AuthDAOMemory());
         var result = registerService.register(newUser);
         //var userService = new UserService(new UserDAOMemory());
 
         //var authData = RegisterService.register(newUser);
 
-        if (result != null) {
-            res.status(200);
-            return g.toJson(result);
+        if (newUser.username() == null || newUser.password() == null || newUser.email() == null ||
+                newUser.username().isEmpty() || newUser.password().isEmpty() || newUser.email().isEmpty()) {
+            res.status(400);
+            return g.toJson(new ClearResult("Error: bad request"));
+        } else if (result == null) {
+            if (registerService.register(newUser) == null) {
+                res.status(403);
+                return g.toJson(new ClearResult("Error: already taken"));
+            }
         } else {
-            res.status(403);
-            return g.toJson(new ClearResult("Error : already taken"));
+            res.status(500);
+            //return g.toJson(new ClearResult("Error: message")); //get error message
         }
-        //2 other errors: 400 and 500
 
+        res.status(200);
+        return g.toJson(result);
+//        } else {
+//            res.status(403);
+//            return g.toJson(new ClearResult("Error : already taken"));
+//        }
+            //2 other errors: 400 and 500
     }
 
     public void stop() {

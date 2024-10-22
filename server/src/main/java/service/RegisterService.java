@@ -21,6 +21,11 @@ public class RegisterService {
     //public AuthData register(UserData user) {
     public RegisterResult register(RegisterRequest request) {
 
+        if (request.username() == null || request.password() == null || request.email() == null ||
+                request.username().isEmpty() || request.password().isEmpty() || request.email().isEmpty()) {
+            return null; //can i put error message here instead of server?
+        }
+
         try {
             UserData foundUser = userDAO.getUser(request.username());
 
@@ -40,7 +45,8 @@ public class RegisterService {
             return new RegisterResult(newUser.username(), authToken);
 
         } catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
+            //throw new RuntimeException(ex);
+            return null;
         }
     }
 
