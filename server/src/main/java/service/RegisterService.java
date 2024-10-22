@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import dataaccess.ResponseException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -19,11 +20,11 @@ public class RegisterService {
     }
 
     //public AuthData register(UserData user) {
-    public RegisterResult register(RegisterRequest request) {
+    public RegisterResult register(RegisterRequest request) throws ResponseException {
 
         if (request.username() == null || request.password() == null || request.email() == null ||
                 request.username().isEmpty() || request.password().isEmpty() || request.email().isEmpty()) {
-            return null; //can i put error message here instead of server?
+            throw new ResponseException(400, "Error: bad request"); //can i put error message here instead of server?
         }
 
         try {
@@ -31,7 +32,7 @@ public class RegisterService {
 
             //user already exists
             if (foundUser != null) {
-                return null;
+                throw new ResponseException(403, "Error: already taken");
             }
 
             UserData newUser = new UserData(request.username(), request.password(), request.email());
@@ -46,7 +47,7 @@ public class RegisterService {
 
         } catch (DataAccessException ex) {
             //throw new RuntimeException(ex);
-            return null;
+            throw new ResponseException(500, "Error: error message"); //get error message
         }
     }
 

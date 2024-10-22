@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.AuthDAOMemory;
+import dataaccess.ResponseException;
 import dataaccess.UserDAOMemory;
 import model.UserData;
 import service.*;
@@ -20,14 +21,20 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.post("/user", this::createUser); //was lambda function
-        Spark.delete("/db", this::clear); //clear() //(req, response) -> "{}"
+        Spark.post("/user", this::createUser);
+        Spark.delete("/db", this::clear);
+        Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private void exceptionHandler(ResponseException ex, Request req, Response res) {
+        res.status(ex.StatusCode());
+        res.body(new Gson().toJson(new ClearResult(ex.getMessage())));
     }
 
     private String clear(Request req, Response res) {
@@ -44,36 +51,14 @@ public class Server {
         return g.toJson(clearedResult);
     }
 
-    private String createUser(Request req, Response res) {
+    private String createUser(Request req, Response res) throws ResponseException {
         var g = new Gson();
         var newUser = g.fromJson(req.body(), RegisterRequest.class);
         RegisterService registerService = new RegisterService(new UserDAOMemory(), new AuthDAOMemory());
         var result = registerService.register(newUser);
-        //var userService = new UserService(new UserDAOMemory());
-
-        //var authData = RegisterService.register(newUser);
-
-        if (newUser.username() == null || newUser.password() == null || newUser.email() == null ||
-                newUser.username().isEmpty() || newUser.password().isEmpty() || newUser.email().isEmpty()) {
-            res.status(400);
-            return g.toJson(new ClearResult("Error: bad request"));
-        } else if (result == null) {
-            if (registerService.register(newUser) == null) {
-                res.status(403);
-                return g.toJson(new ClearResult("Error: already taken"));
-            }
-        } else {
-            res.status(500);
-            //return g.toJson(new ClearResult("Error: message")); //get error message
-        }
 
         res.status(200);
         return g.toJson(result);
-//        } else {
-//            res.status(403);
-//            return g.toJson(new ClearResult("Error : already taken"));
-//        }
-            //2 other errors: 400 and 500
     }
 
     public void stop() {

@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.AuthDAOMemory;
 import dataaccess.DataAccessException;
+import dataaccess.ResponseException;
 import dataaccess.UserDAOMemory;
 import model.AuthData;
 import model.UserData;
@@ -28,7 +29,7 @@ public class DataAccessTest {
     }
 
     @Test
-    public void registerUser() throws DataAccessException {
+    public void registerUser() throws DataAccessException, ResponseException {
         var userDao = new UserDAOMemory();
         var authDao = new AuthDAOMemory();
         //var userService = new UserService(userDao);
