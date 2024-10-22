@@ -48,6 +48,7 @@ public class DataAccessTest {
         var authDAO = new AuthDAOMemory();
         var loginService = new LoginService(userDAO, authDAO);
 
+        //need a user to find
         var currentUser = new UserData("a", "p", "email");
         userDAO.addUser(currentUser);
 
@@ -55,8 +56,9 @@ public class DataAccessTest {
         var res = loginService.login(req);
 
         Assertions.assertNotNull(res);
-        Assertions.assertEquals("1234", res.authToken());
-
+        Assertions.assertEquals("a", res.username());
+        Assertions.assertNotNull(res.authToken());
+        Assertions.assertFalse(res.authToken().isEmpty());
 
     }
 }

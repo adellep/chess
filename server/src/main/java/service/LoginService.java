@@ -8,6 +8,7 @@ import model.AuthData;
 import model.UserData;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class LoginService {
 
@@ -23,15 +24,12 @@ public class LoginService {
         try {
             UserData foundUser = userDAO.getUser(request.username());
 
-            if (foundUser == null) {
+            if (foundUser == null || !Objects.equals(foundUser.password(), request.password())) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 
-            if (!Objects.equals(foundUser.password(), request.password())) {
-                throw new ResponseException(401, "Error: unauthorized");
-            }
-
-            String authToken = "1234";
+            //String authToken = "1234";
+            String authToken = generateToken();
             AuthData authData = new AuthData(authToken, foundUser.username());
             authDAO.createAuth(authData);
 
@@ -40,6 +38,10 @@ public class LoginService {
         } catch (DataAccessException ex) {
             throw new ResponseException(500, "Error: error messsage"); //need to return actual error message
         }
+    }
+
+    public static String generateToken() {
+        return UUID.randomUUID().toString();
     }
 
 }
