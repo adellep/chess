@@ -32,15 +32,31 @@ public class DataAccessTest {
     public void registerUser() throws DataAccessException, ResponseException {
         var userDao = new UserDAOMemory();
         var authDao = new AuthDAOMemory();
-        //var userService = new UserService(userDao);
         var registerService = new RegisterService(userDao, authDao);
         var req = new RegisterRequest("a", "p", "a@a.com");
-        //AuthData authData = userService.register(expected);
         var res = registerService.register(req);
 
         Assertions.assertNotNull(res);
         Assertions.assertEquals("a", res.username());
         Assertions.assertNotNull(res.authToken());
         Assertions.assertNotNull(userDao.getUser("a"));
+    }
+
+    @Test
+    public void loginUser() throws ResponseException {
+        var userDAO = new UserDAOMemory();
+        var authDAO = new AuthDAOMemory();
+        var loginService = new LoginService(userDAO, authDAO);
+
+        var currentUser = new UserData("a", "p", "email");
+        userDAO.addUser(currentUser);
+
+        var req = new LoginRequest("a", "p");
+        var res = loginService.login(req);
+
+        Assertions.assertNotNull(res);
+        Assertions.assertEquals("1234", res.authToken());
+
+
     }
 }

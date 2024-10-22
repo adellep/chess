@@ -37,8 +37,7 @@ public class RegisterService {
 
             UserData newUser = new UserData(request.username(), request.password(), request.email());
             userDAO.addUser(newUser);
-            //String authToken = "hardCodedAuthTok4884";
-            //return new AuthData(authToken, newUser.username());
+
             String authToken = generateToken();
             AuthData authData = new AuthData(authToken, newUser.username());
             authDAO.createAuth(authData);
@@ -46,7 +45,6 @@ public class RegisterService {
             return new RegisterResult(newUser.username(), authToken);
 
         } catch (DataAccessException ex) {
-            //throw new RuntimeException(ex);
             throw new ResponseException(500, "Error: error message"); //get error message
         }
     }
