@@ -6,11 +6,7 @@ import service.*;
 import spark.*;
 
 public class Server {
-//    private final Service s; //class code
-//
-//    public Server(Service s) {
-//        this.s = s;
-//    }
+
     private final UserDAO userDao;
     private final AuthDAO authDAO;
 
@@ -28,6 +24,7 @@ public class Server {
         Spark.post("/user", this::createUser);
         Spark.delete("/db", this::clear);
         Spark.post("/session", this::loginUser);
+        Spark.delete("/session", this::logoutUser);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -39,7 +36,7 @@ public class Server {
 
     private void exceptionHandler(ResponseException ex, Request req, Response res) {
         res.status(ex.StatusCode());
-        res.body(new Gson().toJson(new ResultMessage(ex.getMessage()))); //why does this work to pass register bad request?
+        res.body(new Gson().toJson(new ResultMessage(ex.getMessage())));
     }
 
     private String clear(Request req, Response res) {
@@ -74,6 +71,16 @@ public class Server {
 
         res.status(200);
         return g.toJson(loginResult);
+    }
+
+    private String logoutUser(Request req, Response res) throws ResponseException {
+        var g = new Gson();
+        var logoutRequest = g.fromJson(req.body(), LogoutRequest.class);
+        var logoutService = new LogoutService(this.authDAO);
+        var logoutResult = logoutService.logout(logoutRequest);
+
+        res.status(200);
+        return g.toJson(logoutResult);
     }
 
     public void stop() {

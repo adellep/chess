@@ -20,4 +20,14 @@ public class AuthDAOMemory implements  AuthDAO {
 
         return authData;
     }
+
+    @Override
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        return tokens.get(authToken);
+    }
+
+    @Override
+    public void deleteAuth(String authToken) {
+        tokens.remove(authToken);
+    }
 }

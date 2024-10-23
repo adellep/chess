@@ -11,16 +11,6 @@ import org.junit.jupiter.api.Test;
 
 public class DataAccessTest {
 
-    //example test from class
-//    @Test
-//    public void registerUser() {
-//        var dataAccess = new MemoryDataAccess();
-//        var expected = new UserData("a", "p", "a@a.com");
-//        dataAccess.addUser(expected);
-//        var actual = dataAccess.getUser("a");
-//        Assertions.assertEquals(expected, actual);
-//    }
-
     @Test
     public void clearTest() {
         var clearService = new ClearService();
@@ -29,7 +19,7 @@ public class DataAccessTest {
     }
 
     @Test
-    public void registerUser() throws DataAccessException, ResponseException {
+    public void registerUserSuccess() throws DataAccessException, ResponseException {
         var userDao = new UserDAOMemory();
         var authDao = new AuthDAOMemory();
         var registerService = new RegisterService(userDao, authDao);
@@ -59,6 +49,20 @@ public class DataAccessTest {
         Assertions.assertEquals("a", res.username());
         Assertions.assertNotNull(res.authToken());
         Assertions.assertFalse(res.authToken().isEmpty());
+    }
 
+    @Test
+    public void logoutUser() throws ResponseException, DataAccessException {
+        var authDAO = new AuthDAOMemory();
+        var logoutService = new LogoutService(authDAO);
+
+        var authToken = "1234";
+        authDAO.createAuth(new AuthData(authToken, "a"));
+
+        var logoutReq = new LogoutRequest(authToken);
+        var logoutRes = logoutService.logout(logoutReq);
+
+        Assertions.assertNotNull(logoutRes);
+        Assertions.assertNull(authDAO.getAuth(authToken));
     }
 }
