@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.AuthDAOMemory;
-import dataaccess.DataAccessException;
-import dataaccess.ResponseException;
-import dataaccess.UserDAOMemory;
+import dataaccess.*;
 import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
@@ -13,7 +10,10 @@ public class DataAccessTest {
 
     @Test
     public void clearTest() {
-        var clearService = new ClearService();
+        var userDao = new UserDAOMemory();
+        var gameDAO = new GameDAOMemory();
+        var authDao = new AuthDAOMemory();
+        var clearService = new ClearService(userDao, gameDAO, authDao);
         var result = clearService.clear();
         Assertions.assertNull(result.message());
     }

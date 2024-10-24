@@ -5,13 +5,18 @@ import dataaccess.*;
 import service.*;
 import spark.*;
 
+import java.io.Reader;
+
 public class Server {
 
     private final UserDAO userDao;
+    private final GameDAO gameDAO;
     private final AuthDAO authDAO;
+
 
     public Server() {
         this.userDao = new UserDAOMemory();
+        this.gameDAO = new GameDAOMemory();
         this.authDAO = new AuthDAOMemory();
     }
 
@@ -40,7 +45,7 @@ public class Server {
     }
 
     private String clear(Request req, Response res) {
-        ClearService clearService = new ClearService();
+        ClearService clearService = new ClearService(this.userDao, this.gameDAO, this.authDAO);
         ResultMessage clearedResult = clearService.clear();
 
         if (clearedResult.message() == null) {
@@ -75,7 +80,10 @@ public class Server {
 
     private String logoutUser(Request req, Response res) throws ResponseException {
         var g = new Gson();
-        var logoutRequest = g.fromJson(req.body(), LogoutRequest.class);
+        //var logoutRequest = g.fromJson(req.headers(), LogoutRequest.class);
+        String authToken = req.headers("Authorization");
+
+        var logoutRequest = new LogoutRequest(authToken);
         var logoutService = new LogoutService(this.authDAO);
         var logoutResult = logoutService.logout(logoutRequest);
 

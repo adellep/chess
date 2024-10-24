@@ -16,7 +16,7 @@ public class AuthDAOMemory implements  AuthDAO {
 
     @Override
     public AuthData createAuth(AuthData authData) throws DataAccessException {
-        tokens.put(authData.username(), authData);
+        tokens.put(authData.authToken(), authData); //messed up, was authData.username(), authData
 
         return authData;
     }
@@ -27,7 +27,7 @@ public class AuthDAOMemory implements  AuthDAO {
     }
 
     @Override
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws DataAccessException {
         tokens.remove(authToken);
     }
 }
