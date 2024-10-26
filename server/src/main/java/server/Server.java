@@ -31,6 +31,7 @@ public class Server {
         Spark.post("/session", this::loginUser);
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createNewGame);
+        Spark.get("/game", this::listAllGames);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -107,6 +108,25 @@ public class Server {
 
             res.status(200);
             return g.toJson(createGameResult);
+
+        } catch (ResponseException ex) {
+            res.status(ex.StatusCode());
+            return g.toJson(new ResultMessage(ex.getMessage()));
+        }
+    }
+
+    private String listAllGames(Request req, Response res) throws ResponseException, DataAccessException {
+        var g = new Gson();
+
+        String authToken = req.headers("Authorization");
+
+        var listGamesService = new ListGamesService(this.authDAO, this.gameDAO);
+
+        try {
+            var listGamesResult = listGamesService.listGames(authToken);
+
+            res.status(200);
+            return g.toJson(listGamesResult);
 
         } catch (ResponseException ex) {
             res.status(ex.StatusCode());
