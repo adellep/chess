@@ -32,6 +32,7 @@ public class Server {
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createNewGame);
         Spark.get("/game", this::listAllGames);
+        Spark.put("/game", this::joinGame);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -134,7 +135,13 @@ public class Server {
         }
     }
 
-    //need PUT endpoint
+    private String joinGame(Request req, Response res) throws ResponseException {
+        var g = new Gson();
+
+        String authToken = req.headers("Authorization");
+
+        return g.toJson(new ResultMessage(req.contextPath()));
+    }
 
     public void stop() {
         Spark.stop();
