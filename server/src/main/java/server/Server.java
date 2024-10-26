@@ -30,6 +30,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/session", this::loginUser);
         Spark.delete("/session", this::logoutUser);
+        Spark.post("/game", this::createNewGame);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -89,6 +90,20 @@ public class Server {
 
         res.status(200);
         return g.toJson(logoutResult);
+    }
+
+    private String createNewGame(Request req, Response res) throws ResponseException {
+        var g = new Gson();
+
+        String authToken = req.headers("Authorization");
+        String gameName = "game1";
+
+        var createGameRequest = new CreateGameRequest(authToken, gameName);
+        var createGameService = new CreateGameService(this.authDAO, this.gameDAO);
+        var createGameResult = createGameService.createGame(createGameRequest);
+
+        res.status(200);
+        return g.toJson(createGameResult);
     }
 
     public void stop() {

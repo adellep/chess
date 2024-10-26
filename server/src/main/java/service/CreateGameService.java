@@ -1,9 +1,13 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.ResponseException;
+import model.GameData;
+
+import java.util.UUID;
 
 public class CreateGameService {
     private final AuthDAO authDAO;
@@ -16,16 +20,25 @@ public class CreateGameService {
 
     public CreateGameResult createGame(CreateGameRequest request) throws ResponseException {
         try {
-            var authToken = authDAO.getAuth(request.authToken());
+            var authData = authDAO.getAuth(request.authToken());
 
-            if (authToken == null) {
+            if (authData == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 
-        } catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-        return null;
+            ChessGame chessGame = new ChessGame();
+            int gameID = generateGameID();
+            GameData newGame = new GameData(gameID, authData.username(), null, chessGame);
+            gameDAO.createGame(newGame);
 
+            return new CreateGameResult(gameID);
+
+        } catch (DataAccessException ex) {
+            throw new ResponseException(500, "Error: error messsage");
+        }
+    }
+
+    public static int generateGameID() {
+        return UUID.randomUUID().hashCode();
     }
 }

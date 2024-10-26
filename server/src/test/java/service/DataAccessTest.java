@@ -65,4 +65,18 @@ public class DataAccessTest {
         Assertions.assertNotNull(logoutRes);
         Assertions.assertNull(authDAO.getAuth(authToken));
     }
+
+    @Test
+    public void createGameSuccess() throws ResponseException, DataAccessException {
+        var authDAO = new AuthDAOMemory();
+        var gameDAO = new GameDAOMemory();
+        var createGameService = new CreateGameService(authDAO, gameDAO);
+        var authData = new AuthData("token1", "username1");
+        authDAO.createAuth(authData);
+
+        var createGameReq = new CreateGameRequest("token1", "Game1");
+        var createGameRes = createGameService.createGame(createGameReq);
+
+        Assertions.assertNotNull(createGameRes);
+    }
 }
