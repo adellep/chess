@@ -27,18 +27,18 @@ public class CreateGameService {
             }
 
             ChessGame chessGame = new ChessGame();
-            int gameID = generateGameID();
-            GameData newGame = new GameData(gameID, authData.username(), null, chessGame);
-            gameDAO.createGame(newGame);
+            //int gameID = generateGameID();
+            GameData newGame = new GameData(1, authData.username(), null, chessGame);
+            GameData saveGame = gameDAO.createGame(newGame);
 
-            return new CreateGameResult(gameID);
+            return new CreateGameResult(saveGame.gameID());
 
         } catch (DataAccessException ex) {
-            throw new ResponseException(500, "Error: error messsage");
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 
-    public static int generateGameID() {
-        return UUID.randomUUID().hashCode();
-    }
+//    public static int generateGameID() {
+//        return UUID.randomUUID().hashCode();
+//    }
 }

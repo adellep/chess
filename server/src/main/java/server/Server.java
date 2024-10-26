@@ -96,14 +96,22 @@ public class Server {
         var g = new Gson();
 
         String authToken = req.headers("Authorization");
-        String gameName = "game1";
+        String gameName = req.body();
+        //String gameName = "game1";
 
         var createGameRequest = new CreateGameRequest(authToken, gameName);
         var createGameService = new CreateGameService(this.authDAO, this.gameDAO);
-        var createGameResult = createGameService.createGame(createGameRequest);
 
-        res.status(200);
-        return g.toJson(createGameResult);
+        try {
+            var createGameResult = createGameService.createGame(createGameRequest);
+
+            res.status(200);
+            return g.toJson(createGameResult);
+
+        } catch (ResponseException ex) {
+            res.status(ex.StatusCode());
+            return g.toJson(new ResultMessage(ex.getMessage()));
+        }
     }
 
     public void stop() {
