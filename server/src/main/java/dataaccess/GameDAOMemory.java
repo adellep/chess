@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class GameDAOMemory implements  GameDAO {
 
-    final private Map<Integer, GameData> games = new HashMap<>();
+    private final Map<Integer, GameData> games = new HashMap<>();
     int newGameID = 1;
 
     @Override
@@ -20,7 +20,7 @@ public class GameDAOMemory implements  GameDAO {
 
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
-        gameData = new GameData(newGameID++, gameData.whiteUsername(), gameData.blackUsername(), gameData.game());
+        gameData = new GameData(newGameID++, gameData.gameName(), gameData.whiteUsername(), gameData.blackUsername(), gameData.game());
         games.put(gameData.gameID(), gameData);
 
         return gameData;

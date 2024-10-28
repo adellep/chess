@@ -7,8 +7,6 @@ import dataaccess.GameDAO;
 import dataaccess.ResponseException;
 import model.GameData;
 
-import java.util.UUID;
-
 public class CreateGameService {
     private final AuthDAO authDAO;
     private final GameDAO gameDAO;
@@ -27,8 +25,8 @@ public class CreateGameService {
             }
 
             ChessGame chessGame = new ChessGame();
-            //int gameID = generateGameID();
-            GameData newGame = new GameData(1, authData.username(), null, chessGame);
+            
+            GameData newGame = new GameData(1, request.gameName(), authData.username(), null, chessGame); //both usernames should be null?
             GameData saveGame = gameDAO.createGame(newGame);
 
             return new CreateGameResult(saveGame.gameID());
@@ -37,8 +35,4 @@ public class CreateGameService {
             throw new ResponseException(500, ex.getMessage());
         }
     }
-
-//    public static int generateGameID() {
-//        return UUID.randomUUID().hashCode();
-//    }
 }

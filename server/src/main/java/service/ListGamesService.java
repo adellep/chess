@@ -24,6 +24,7 @@ public class ListGamesService {
             }
 
             List<GameData> games = gameDAO.getGames();
+
             return new ListGamesResult(games);
 
         } catch (DataAccessException ex) {
