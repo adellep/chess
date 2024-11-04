@@ -45,7 +45,7 @@ public class RegisterService {
             return new RegisterResult(newUser.username(), authToken);
 
         } catch (DataAccessException ex) {
-            throw new ResponseException(500, "Error: error message"); //get error message
+            throw new ResponseException(500, ex.getMessage()); //get error message
         }
     }
 

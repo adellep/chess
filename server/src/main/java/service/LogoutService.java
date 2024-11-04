@@ -27,7 +27,7 @@ public class LogoutService {
             return new LogoutResult("logged out");
 
         } catch (DataAccessException ex) {
-            throw new ResponseException(500, "Error: error messsage");
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 }

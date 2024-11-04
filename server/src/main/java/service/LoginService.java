@@ -35,7 +35,7 @@ public class LoginService {
             return new LoginResult(foundUser.username(), authToken);
 
         } catch (DataAccessException ex) {
-            throw new ResponseException(500, "Error: error messsage"); //need to return actual error message
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 

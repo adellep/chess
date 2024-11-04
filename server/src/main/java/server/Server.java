@@ -151,7 +151,6 @@ public class Server {
             res.status(ex.StatusCode());
             return g.toJson(new ResultMessage(ex.getMessage()));
         }
-        //return g.toJson(new ResultMessage(req.contextPath()));
     }
 
     public void stop() {
