@@ -26,7 +26,7 @@ public class CreateGameService {
 
             ChessGame chessGame = new ChessGame();
             
-            GameData newGame = new GameData(1, request.gameName(), authData.username(), null, chessGame); //both usernames should be null?
+            GameData newGame = new GameData(1, request.gameName(), null, null, chessGame);
             GameData saveGame = gameDAO.createGame(newGame);
 
             return new CreateGameResult(saveGame.gameID());

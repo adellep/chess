@@ -139,8 +139,19 @@ public class Server {
         var g = new Gson();
 
         String authToken = req.headers("Authorization");
+        var body = g.fromJson(req.body(),JoinGameRequest.class);
+        var joinGameService = new JoinGameService(this.authDAO, this.gameDAO);
 
-        return g.toJson(new ResultMessage(req.contextPath()));
+        try {
+            var joinGameResult = joinGameService.joinGame(new JoinGameRequest(authToken, body.playerColor(), body.gameID()));
+
+            res.status(200);
+            return g.toJson(joinGameResult);
+        } catch (ResponseException ex) {
+            res.status(ex.StatusCode());
+            return g.toJson(new ResultMessage(ex.getMessage()));
+        }
+        //return g.toJson(new ResultMessage(req.contextPath()));
     }
 
     public void stop() {
