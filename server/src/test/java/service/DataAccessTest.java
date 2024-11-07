@@ -34,7 +34,7 @@ public class DataAccessTest {
     }
 
     @Test
-    public void registerUserAlreadyExists() throws DataAccessException, ResponseException {
+    public void registerUserAlreadyExists() throws ResponseException {
         var userDao = new UserDAOMemory();
         var authDao = new AuthDAOMemory();
         var registerService = new RegisterService(userDao, authDao);
@@ -44,9 +44,7 @@ public class DataAccessTest {
         var req2 = new RegisterRequest("a", "pp", "aa@aa.com");
         //var res2 = registerService.register(req2);
 
-        Assertions.assertThrows(ResponseException.class, () -> {
-            registerService.register(req2);
-        });
+        Assertions.assertThrows(ResponseException.class, () -> registerService.register(req2));
     }
 
     @Test
@@ -68,7 +66,7 @@ public class DataAccessTest {
     }
 
     @Test
-    public void loginUserWrongPassword() throws ResponseException {
+    public void loginUserWrongPassword() {
         var userDAO = new UserDAOMemory();
         var authDAO = new AuthDAOMemory();
         var loginService = new LoginService(userDAO, authDAO);
@@ -78,9 +76,7 @@ public class DataAccessTest {
 
         var wrongPassword = new LoginRequest("a", "wrongPass");
 
-        Assertions.assertThrows(ResponseException.class, () -> {
-            loginService.login(wrongPassword);
-        });
+        Assertions.assertThrows(ResponseException.class, () -> loginService.login(wrongPassword));
     }
 
     @Test
@@ -99,16 +95,14 @@ public class DataAccessTest {
     }
 
     @Test
-    public void logoutWrongAuthToken() throws ResponseException, DataAccessException {
+    public void logoutWrongAuthToken() {
         var authDAO = new AuthDAOMemory();
         var logoutService = new LogoutService(authDAO);
 
         var wrongAuthToken = "wrongToken";
         var logoutRequest = new LogoutRequest(wrongAuthToken);
 
-        Assertions.assertThrows(ResponseException.class, () -> {
-            logoutService.logout(logoutRequest);
-        });
+        Assertions.assertThrows(ResponseException.class, () -> logoutService.logout(logoutRequest));
 
     }
 
@@ -127,16 +121,14 @@ public class DataAccessTest {
     }
 
     @Test
-    public void createGameWrongAuthToken() throws  ResponseException, DataAccessException {
+    public void createGameWrongAuthToken() {
         var authDAO = new AuthDAOMemory();
         var gameDAO = new GameDAOMemory();
         var createGameService = new CreateGameService(authDAO, gameDAO);
 
         var wrongAuthToken = new CreateGameRequest("wrongToken", "Game1");
 
-        Assertions.assertThrows(ResponseException.class, () -> {
-            createGameService.createGame(wrongAuthToken);
-        });
+        Assertions.assertThrows(ResponseException.class, () -> createGameService.createGame(wrongAuthToken));
 
     }
 
@@ -160,14 +152,12 @@ public class DataAccessTest {
     }
 
     @Test
-    public void listGamesWrongAuthToken() throws ResponseException {
+    public void listGamesWrongAuthToken() {
         var authDAO = new AuthDAOMemory();
         var gameDAO = new GameDAOMemory();
         var listGamesService = new ListGamesService(authDAO, gameDAO);
 
-        Assertions.assertThrows(ResponseException.class, () -> {
-            listGamesService.listGames("wrongAuthToken");
-        });
+        Assertions.assertThrows(ResponseException.class, () -> listGamesService.listGames("wrongAuthToken"));
     }
 
     @Test
@@ -188,7 +178,7 @@ public class DataAccessTest {
     }
 
     @Test
-    public void joinGameWrongAuthToken() throws ResponseException, DataAccessException {
+    public void joinGameWrongAuthToken() throws DataAccessException {
         var authDAO = new AuthDAOMemory();
         var gameDAO = new GameDAOMemory();
         var joinGameService = new JoinGameService(authDAO, gameDAO);
@@ -197,9 +187,7 @@ public class DataAccessTest {
 
         var joinRequest = new JoinGameRequest("wrongToken", "white", 1);
 
-        Assertions.assertThrows(ResponseException.class, () -> {
-            joinGameService.joinGame(joinRequest);
-        });
+        Assertions.assertThrows(ResponseException.class, () -> joinGameService.joinGame(joinRequest));
 
     }
 }
