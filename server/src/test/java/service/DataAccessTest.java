@@ -169,4 +169,37 @@ public class DataAccessTest {
             listGamesService.listGames("wrongAuthToken");
         });
     }
+
+    @Test
+    public void joinGameSuccess() throws ResponseException, DataAccessException {
+        var authDAO = new AuthDAOMemory();
+        var gameDAO = new GameDAOMemory();
+        var joinGameService = new JoinGameService(authDAO, gameDAO);
+        var authData = new AuthData("token1", "username1");
+        authDAO.createAuth(authData);
+
+        var game = new GameData(1, "game1", null, "username2", null);
+        gameDAO.createGame(game);
+
+        var joinRequest = new JoinGameRequest("token1", "white", 1);
+        var joinResult = joinGameService.joinGame(joinRequest);
+
+        Assertions.assertNotNull(joinResult);
+    }
+
+    @Test
+    public void joinGameWrongAuthToken() throws ResponseException, DataAccessException {
+        var authDAO = new AuthDAOMemory();
+        var gameDAO = new GameDAOMemory();
+        var joinGameService = new JoinGameService(authDAO, gameDAO);
+        var game = new GameData(1, "game1", "username1", null, null);
+        gameDAO.createGame(game);
+
+        var joinRequest = new JoinGameRequest("wrongToken", "white", 1);
+
+        Assertions.assertThrows(ResponseException.class, () -> {
+            joinGameService.joinGame(joinRequest);
+        });
+
+    }
 }
