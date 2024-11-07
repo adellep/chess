@@ -8,9 +8,9 @@ public class ClearService {
     private final AuthDAO authDAO;
 
     public ClearService(UserDAO userDAO, GameDAO gameDAO, AuthDAO authDAO) {
-        this.userDAO = userDAO; //new UserDAOMemory();
-        this.gameDAO = gameDAO; //GameDAOMemory();
-        this.authDAO = authDAO; //AuthDAOMemory();
+        this.userDAO = userDAO;
+        this.gameDAO = gameDAO;
+        this.authDAO = authDAO;
     }
 
     public ResultMessage clear() {

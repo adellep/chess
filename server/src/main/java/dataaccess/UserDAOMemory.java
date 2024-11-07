@@ -30,9 +30,4 @@ public class UserDAOMemory implements UserDAO {
     public UserData createUser(UserData userData) throws DataAccessException {
         return null;
     }
-
-//    @Override
-//    public UserData createAuth(AuthData authData) throws DataAccessException {
-//        return null;
-//    }
 }
