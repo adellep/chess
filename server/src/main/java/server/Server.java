@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import requests.*;
 import service.*;
 import spark.*;
 
@@ -139,7 +140,7 @@ public class Server {
         var g = new Gson();
 
         String authToken = req.headers("Authorization");
-        var body = g.fromJson(req.body(),JoinGameRequest.class);
+        var body = g.fromJson(req.body(), JoinGameRequest.class);
         var joinGameService = new JoinGameService(this.authDAO, this.gameDAO);
 
         try {

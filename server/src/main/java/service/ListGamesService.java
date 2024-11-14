@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.GameData;
+import results.ListGamesResult;
 
 import java.util.List;
 

@@ -2,6 +2,8 @@ package service;
 
 import dataaccess.*;
 import model.GameData;
+import requests.JoinGameRequest;
+import results.JoinGameResult;
 
 public class JoinGameService {
     private final AuthDAO authDAO;

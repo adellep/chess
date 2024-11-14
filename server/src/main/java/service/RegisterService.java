@@ -6,6 +6,8 @@ import dataaccess.ResponseException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
+import requests.RegisterRequest;
+import results.RegisterResult;
 
 import java.util.UUID;
 

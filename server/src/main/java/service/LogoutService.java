@@ -4,6 +4,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.ResponseException;
 import model.AuthData;
+import requests.LogoutRequest;
 
 public class LogoutService {
 
@@ -13,7 +14,7 @@ public class LogoutService {
         this.authDAO = authDAO;
     }
 
-    public LogoutResult logout(LogoutRequest request) throws ResponseException {
+    public ResultMessage logout(LogoutRequest request) throws ResponseException {
         try {
 
             var authToken = authDAO.getAuth(request.authToken());
@@ -24,7 +25,7 @@ public class LogoutService {
 
             authDAO.deleteAuth(request.authToken());
 
-            return new LogoutResult("logged out");
+            return new ResultMessage("logged out");
 
         } catch (DataAccessException ex) {
             throw new ResponseException(500, ex.getMessage());
