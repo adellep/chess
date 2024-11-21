@@ -142,15 +142,24 @@ public class ChessGame {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
 
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, pos);
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(kingPos)) {
-                            return true;
-                        }
-                    }
+                if (pieceThreatened(piece, teamColor, pos, kingPos)) {
+                    return true;
                 }
             }
+        }
+        return false;
+    }
+
+    private boolean pieceThreatened(ChessPiece piece, TeamColor teamColor, ChessPosition pos, ChessPosition kingPos) {
+        if (piece == null || piece.getTeamColor() == teamColor) {
+            return false;
+        }
+
+        for (ChessMove move : piece.pieceMoves(board, pos)) {
+            if (move.getEndPosition().equals(kingPos)) {
+                return true;
+            }
+
         }
         return false;
     }

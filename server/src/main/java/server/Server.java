@@ -6,8 +6,6 @@ import requests.*;
 import service.*;
 import spark.*;
 
-import java.io.Reader;
-
 public class Server {
 
     private final UserDAO userDao;
@@ -44,7 +42,7 @@ public class Server {
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
         res.body(new Gson().toJson(new ResultMessage(ex.getMessage())));
     }
 
@@ -112,7 +110,7 @@ public class Server {
             return g.toJson(createGameResult);
 
         } catch (ResponseException ex) {
-            res.status(ex.StatusCode());
+            res.status(ex.statusCode());
             return g.toJson(new ResultMessage(ex.getMessage()));
         }
     }
@@ -131,7 +129,7 @@ public class Server {
             return g.toJson(listGamesResult);
 
         } catch (ResponseException ex) {
-            res.status(ex.StatusCode());
+            res.status(ex.statusCode());
             return g.toJson(new ResultMessage(ex.getMessage()));
         }
     }
@@ -149,7 +147,7 @@ public class Server {
             res.status(200);
             return g.toJson(joinGameResult);
         } catch (ResponseException ex) {
-            res.status(ex.StatusCode());
+            res.status(ex.statusCode());
             return g.toJson(new ResultMessage(ex.getMessage()));
         }
     }
