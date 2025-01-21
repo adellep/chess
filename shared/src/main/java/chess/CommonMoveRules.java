@@ -4,11 +4,11 @@ import java.util.Collection;
 
 public abstract class CommonMoveRules implements MoveRules {
 
-    boolean isRealSquare(ChessPosition pos) {
+    boolean notRealSquare(ChessPosition pos) {
         int row = pos.getRow();
         int col = pos.getColumn();
 
-        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+        return !(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     }
 
     boolean isEnemy(ChessPosition originalPos, ChessPosition newPos, ChessBoard board) {
@@ -26,7 +26,7 @@ public abstract class CommonMoveRules implements MoveRules {
 
         var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
 
-        if(!isRealSquare(newPos)) {
+        if(notRealSquare(newPos)) {
             return;
         }
 
@@ -50,7 +50,7 @@ public abstract class CommonMoveRules implements MoveRules {
     void calcOneMove(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
         var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
 
-        if (!isRealSquare(newPos)) {
+        if (notRealSquare(newPos)) {
             return;
         }
         if (isEnemy(originalPos, newPos, board)) {
