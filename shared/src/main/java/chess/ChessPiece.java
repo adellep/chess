@@ -54,8 +54,36 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        return new ArrayList<>();
+        //return new ArrayList<>();
+        var moves = new ArrayList<ChessMove>();
+        var piece = board.getPiece(myPosition);
+
+        if(piece.getPieceType() == PieceType.BISHOP) {
+            getBishopMoves(moves, myPosition, myPosition, -1, -1, true);
+            getBishopMoves(moves, myPosition, myPosition, +1, -1, true);
+            getBishopMoves(moves, myPosition, myPosition, +1, +1, true);
+            getBishopMoves(moves, myPosition, myPosition, -1, +1, true);
+        }
+        return moves;
     }
+
+    private void getBishopMoves(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, boolean keepMoving) {
+
+        var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
+        moves.add(new ChessMove(originalPos, newPos, null));
+
+        if(keepMoving && isRealSquare(newPos)) {
+            getBishopMoves(moves, originalPos, newPos, rowDir, colDir, keepMoving);
+        }
+    }
+
+    boolean isRealSquare(ChessPosition pos) {
+        int row = pos.getRow();
+        int col = pos.getColumn();
+
+        return row >= 0 && row <= 8 && col >= 0 && col <= 8;
+    }
+
 
     @Override
     public boolean equals(Object o) {
