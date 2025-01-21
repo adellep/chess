@@ -57,11 +57,14 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<ChessMove>();
         var piece = board.getPiece(myPosition);
 
-        if(piece.getPieceType() == PieceType.BISHOP) {
+        if (piece.getPieceType() == PieceType.BISHOP) {
             moves = new BishopMoves().moves(board, myPosition);
         }
-        if(piece.getPieceType() == PieceType.KNIGHT) {
+        if (piece.getPieceType() == PieceType.KNIGHT) {
             moves = new KnightMoves().moves(board, myPosition);
+        }
+        if (piece.getPieceType() == PieceType.ROOK) {
+            moves = new RookMoves().moves(board, myPosition);
         }
         return moves;
     }
