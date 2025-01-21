@@ -54,7 +54,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<ChessMove>();
+        Collection<ChessMove> moves = new ArrayList<>();
         var piece = board.getPiece(myPosition);
 
         if (piece.getPieceType() == PieceType.BISHOP) {
@@ -69,6 +69,9 @@ public class ChessPiece {
         if (piece.getPieceType() == PieceType.QUEEN) {
             moves = new RookMoves().moves(board, myPosition);
             moves.addAll(new BishopMoves().moves(board, myPosition));
+        }
+        if (piece.getPieceType() == PieceType.KING) {
+            moves = new KingMoves().moves(board, myPosition);
         }
         return moves;
     }
