@@ -59,21 +59,37 @@ public class ChessPiece {
         var piece = board.getPiece(myPosition);
 
         if(piece.getPieceType() == PieceType.BISHOP) {
-            getBishopMoves(moves, myPosition, myPosition, -1, -1, true);
-            getBishopMoves(moves, myPosition, myPosition, +1, -1, true);
-            getBishopMoves(moves, myPosition, myPosition, +1, +1, true);
-            getBishopMoves(moves, myPosition, myPosition, -1, +1, true);
+            getBishopMoves(moves, myPosition, myPosition, -1, -1, board);
+            getBishopMoves(moves, myPosition, myPosition, +1, -1, board);
+            getBishopMoves(moves, myPosition, myPosition, +1, +1,board);
+            getBishopMoves(moves, myPosition, myPosition, -1, +1,board);
         }
         return moves;
     }
 
-    private void getBishopMoves(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, boolean keepMoving) {
+    private void getBishopMoves(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
 
         var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
-        moves.add(new ChessMove(originalPos, newPos, null));
 
-        if(keepMoving && isRealSquare(newPos)) {
-            getBishopMoves(moves, originalPos, newPos, rowDir, colDir, keepMoving);
+        if(!isRealSquare(newPos)) {
+            return;
+        }
+
+        boolean keepMoving = true;
+        if (isEnemy(originalPos, newPos, board)) {
+            moves.add(new ChessMove(originalPos, newPos, null));
+            keepMoving = false;
+        }
+        else if (board.getPiece(newPos) == null) {
+            moves.add(new ChessMove(originalPos, newPos, null));
+            //getBishopMoves(moves, originalPos, newPos, rowDir, colDir, keepMoving, board);
+        }
+        else {
+            keepMoving = false;
+        }
+
+        if (keepMoving) {
+                getBishopMoves(moves, originalPos, newPos, rowDir, colDir, board);
         }
     }
 
@@ -81,7 +97,18 @@ public class ChessPiece {
         int row = pos.getRow();
         int col = pos.getColumn();
 
-        return row >= 0 && row <= 8 && col >= 0 && col <= 8;
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
+    }
+
+    boolean isEnemy(ChessPosition originalPos, ChessPosition newPos, ChessBoard board) {
+        var pieceOriginalPos = board.getPiece(originalPos);
+        var pieceNewPos = board.getPiece(newPos);
+
+        if (pieceNewPos == null) {
+            return false;
+        }
+
+        return pieceOriginalPos.getTeamColor() != pieceNewPos.getTeamColor();
     }
 
 
