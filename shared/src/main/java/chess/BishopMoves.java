@@ -9,10 +9,10 @@ public class BishopMoves extends CommonMoveRules {
     public Collection<ChessMove> moves(ChessBoard board, ChessPosition myPosition) {
         var moves = new ArrayList<ChessMove>();
 
-        getBishopMoves(moves, myPosition, myPosition, +1, -1, board);
-        getBishopMoves(moves, myPosition, myPosition, +1, +1, board);
-        getBishopMoves(moves, myPosition, myPosition, -1, +1, board);
-        getBishopMoves(moves, myPosition, myPosition, -1, -1, board);
+        calcManyMoves(moves, myPosition, myPosition, +1, -1, board);
+        calcManyMoves(moves, myPosition, myPosition, +1, +1, board);
+        calcManyMoves(moves, myPosition, myPosition, -1, +1, board);
+        calcManyMoves(moves, myPosition, myPosition, -1, -1, board);
 
         return moves;
     }

@@ -22,7 +22,7 @@ public abstract class CommonMoveRules implements MoveRules {
         return pieceOriginalPos.getTeamColor() != pieceNewPos.getTeamColor();
     }
 
-    void getBishopMoves(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
+    void calcManyMoves(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
 
         var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
 
@@ -43,7 +43,21 @@ public abstract class CommonMoveRules implements MoveRules {
         }
 
         if (keepMoving) {
-            getBishopMoves(moves, originalPos, newPos, rowDir, colDir, board);
+            calcManyMoves(moves, originalPos, newPos, rowDir, colDir, board);
+        }
+    }
+
+    void calcOneMove(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
+        var newPos = new ChessPosition(pos.getRow() + rowDir, pos.getColumn() + colDir);
+
+        if (!isRealSquare(newPos)) {
+            return;
+        }
+        if (isEnemy(originalPos, newPos, board)) {
+            moves.add(new ChessMove(originalPos, newPos, null));
+        }
+        else if (board.getPiece(newPos) == null) {
+            moves.add(new ChessMove(originalPos, newPos, null));
         }
     }
 }
