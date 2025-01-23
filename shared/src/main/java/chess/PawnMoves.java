@@ -12,6 +12,8 @@ public class PawnMoves extends CommonMoveRules {
 
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             pawnMoves(moves, myPosition, myPosition, +1, 0, board);
+            //pawnMoves(moves, myPosition, myPosition, +1, -1, board);
+            //pawnMoves(moves, myPosition, myPosition, +1, +1, board);
 
             if (pawnFirstTurnWhite(myPosition, board) && freeSquare(myPosition, +1, board) && freeSquare(myPosition, +2, board)) {
                 pawnMoves(moves, myPosition, myPosition, +2, 0, board);
@@ -19,6 +21,8 @@ public class PawnMoves extends CommonMoveRules {
         }
         if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
             pawnMoves(moves, myPosition, myPosition, -1, 0, board);
+            //pawnMoves(moves, myPosition, myPosition, -1, -1, board);
+            //pawnMoves(moves, myPosition, myPosition, -1, +1, board);
 
             if (pawnFirstTurnBlack(myPosition, board) && freeSquare(myPosition, -1, board) && freeSquare(myPosition, -2, board)) {
                 pawnMoves(moves, myPosition, myPosition, -2, 0, board);
@@ -44,10 +48,12 @@ public class PawnMoves extends CommonMoveRules {
             return;
         }
         if (isEnemy(originalPos, newPos, board)) {
-            moves.add(new ChessMove(originalPos, newPos, null));
+            //moves.add(new ChessMove(originalPos, newPos, null));
+            promotePawn(moves, originalPos, newPos);
         }
         else if (board.getPiece(newPos) == null) {
-            moves.add(new ChessMove(originalPos, newPos, null));
+            //moves.add(new ChessMove(originalPos, newPos, null));
+            promotePawn(moves, originalPos, newPos);
         }
     }
 
@@ -56,6 +62,19 @@ public class PawnMoves extends CommonMoveRules {
         var twoForward = new ChessPosition(oneForward.getRow() + rowDir, oneForward.getColumn());
 
         return board.getPiece(oneForward) == null && board.getPiece(twoForward) == null;
+    }
+
+    //Rook, Knight, Bishop, or Queen
+    void promotePawn(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition newPos) {
+        if (newPos.getRow() == 1 || newPos.getRow() == 8) {
+            moves.add(new ChessMove(originalPos, newPos, ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(originalPos, newPos, ChessPiece.PieceType.KNIGHT));
+            moves.add(new ChessMove(originalPos, newPos, ChessPiece.PieceType.BISHOP));
+            moves.add(new ChessMove(originalPos, newPos, ChessPiece.PieceType.QUEEN));
+        }
+        else {
+            moves.add(new ChessMove(originalPos, newPos, null));
+        }
     }
 }
 
