@@ -12,8 +12,8 @@ public class PawnMoves extends CommonMoveRules {
 
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             pawnMoves(moves, myPosition, myPosition, +1, 0, board);
-            //pawnMoves(moves, myPosition, myPosition, +1, -1, board);
-            //pawnMoves(moves, myPosition, myPosition, +1, +1, board);
+            pawnMoves(moves, myPosition, myPosition, +1, -1, board);
+            pawnMoves(moves, myPosition, myPosition, +1, +1, board);
 
             if (pawnFirstTurnWhite(myPosition, board) && freeSquare(myPosition, +1, board) && freeSquare(myPosition, +2, board)) {
                 pawnMoves(moves, myPosition, myPosition, +2, 0, board);
@@ -21,8 +21,8 @@ public class PawnMoves extends CommonMoveRules {
         }
         if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
             pawnMoves(moves, myPosition, myPosition, -1, 0, board);
-            //pawnMoves(moves, myPosition, myPosition, -1, -1, board);
-            //pawnMoves(moves, myPosition, myPosition, -1, +1, board);
+            pawnMoves(moves, myPosition, myPosition, -1, -1, board);
+            pawnMoves(moves, myPosition, myPosition, -1, +1, board);
 
             if (pawnFirstTurnBlack(myPosition, board) && freeSquare(myPosition, -1, board) && freeSquare(myPosition, -2, board)) {
                 pawnMoves(moves, myPosition, myPosition, -2, 0, board);
@@ -32,12 +32,10 @@ public class PawnMoves extends CommonMoveRules {
     }
 
     boolean pawnFirstTurnWhite(ChessPosition pos, ChessBoard board) {
-        var piece = board.getPiece(pos);
         return pos.getRow() == 2;
     }
 
     boolean pawnFirstTurnBlack(ChessPosition pos, ChessBoard board) {
-        var piece = board.getPiece(pos);
         return pos.getRow() == 7;
     }
 
@@ -51,9 +49,11 @@ public class PawnMoves extends CommonMoveRules {
             //moves.add(new ChessMove(originalPos, newPos, null));
             promotePawn(moves, originalPos, newPos);
         }
-        else if (board.getPiece(newPos) == null) {
-            //moves.add(new ChessMove(originalPos, newPos, null));
-            promotePawn(moves, originalPos, newPos);
+        else if (colDir == 0) {
+            if (board.getPiece(newPos) == null) {
+                //moves.add(new ChessMove(originalPos, newPos, null));
+                promotePawn(moves, originalPos, newPos);
+            }
         }
     }
 
