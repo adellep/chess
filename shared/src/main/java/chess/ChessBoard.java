@@ -1,6 +1,5 @@
 package chess;
 
-import java.io.CharArrayWriter;
 import java.util.Arrays;
 import java.util.Objects;
 
