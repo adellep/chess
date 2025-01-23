@@ -60,4 +60,20 @@ public abstract class CommonMoveRules implements MoveRules {
             moves.add(new ChessMove(originalPos, newPos, null));
         }
     }
+
+//    boolean pawnFirstTurn(ChessPosition pos, ChessBoard board) {
+//        var piece = board.getPiece(pos);
+//        var row = pos.getRow();
+//        var color = piece.getTeamColor();
+//
+//        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+//            if (color == ChessGame.TeamColor.WHITE && row == 2) {
+//                return true;
+//            }
+//            if (color == ChessGame.TeamColor.BLACK && row == 7) {
+//                 return true;
+//            }
+//        }
+//        return false;
+//    }
 }
