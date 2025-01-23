@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class PawnMoves extends CommonMoveRules {
     @Override
@@ -15,7 +14,7 @@ public class PawnMoves extends CommonMoveRules {
             pawnMoves(moves, myPosition, myPosition, +1, -1, board);
             pawnMoves(moves, myPosition, myPosition, +1, +1, board);
 
-            if (pawnFirstTurnWhite(myPosition, board) && freeSquare(myPosition, +1, board) && freeSquare(myPosition, +2, board)) {
+            if (pawnFirstTurnWhite(myPosition) && freeSquare(myPosition, +1, board) && freeSquare(myPosition, +2, board)) {
                 pawnMoves(moves, myPosition, myPosition, +2, 0, board);
             }
         }
@@ -24,18 +23,18 @@ public class PawnMoves extends CommonMoveRules {
             pawnMoves(moves, myPosition, myPosition, -1, -1, board);
             pawnMoves(moves, myPosition, myPosition, -1, +1, board);
 
-            if (pawnFirstTurnBlack(myPosition, board) && freeSquare(myPosition, -1, board) && freeSquare(myPosition, -2, board)) {
+            if (pawnFirstTurnBlack(myPosition) && freeSquare(myPosition, -1, board) && freeSquare(myPosition, -2, board)) {
                 pawnMoves(moves, myPosition, myPosition, -2, 0, board);
             }
         }
         return moves;
     }
 
-    boolean pawnFirstTurnWhite(ChessPosition pos, ChessBoard board) {
+    boolean pawnFirstTurnWhite(ChessPosition pos) {
         return pos.getRow() == 2;
     }
 
-    boolean pawnFirstTurnBlack(ChessPosition pos, ChessBoard board) {
+    boolean pawnFirstTurnBlack(ChessPosition pos) {
         return pos.getRow() == 7;
     }
 
@@ -45,15 +44,13 @@ public class PawnMoves extends CommonMoveRules {
         if (notRealSquare(newPos)) {
             return;
         }
-        if (isEnemy(originalPos, newPos, board)) {
-            //moves.add(new ChessMove(originalPos, newPos, null));
-            promotePawn(moves, originalPos, newPos);
-        }
-        else if (colDir == 0) {
+        if (colDir == 0) {
             if (board.getPiece(newPos) == null) {
-                //moves.add(new ChessMove(originalPos, newPos, null));
                 promotePawn(moves, originalPos, newPos);
             }
+        }
+        else if (isEnemy(originalPos, newPos, board)) {
+            promotePawn(moves, originalPos, newPos);
         }
     }
 
@@ -77,17 +74,3 @@ public class PawnMoves extends CommonMoveRules {
         }
     }
 }
-
-//first time pawn is moved, white is at row 2, black is at row 7
-
-
-
-/*  Pawns normally may move forward one square if that square is unoccupied,
-though if it is the first time that pawn is being moved,
-it may be moved forward 2 squares (provided both squares are unoccupied).
-Pawns cannot capture forward, but instead capture forward diagonally
-(1 square forward and 1 square sideways). They may only move diagonally like this
- if capturing an enemy piece. When a pawn moves to the end of the board
- (row 8 for white and row 1 for black), they get promoted and are replaced with
- the player's choice of Rook, Knight, Bishop, or Queen (they cannot stay a Pawn or become King).
- */
