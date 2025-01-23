@@ -13,14 +13,14 @@ public class PawnMoves extends CommonMoveRules {
         if (piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
             pawnMoves(moves, myPosition, myPosition, +1, 0, board);
 
-            if (pawnFirstTurnWhite(myPosition, board)) {
+            if (pawnFirstTurnWhite(myPosition, board) && freeSquare(myPosition, +1, board) && freeSquare(myPosition, +2, board)) {
                 pawnMoves(moves, myPosition, myPosition, +2, 0, board);
             }
         }
         if (piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
             pawnMoves(moves, myPosition, myPosition, -1, 0, board);
 
-            if (pawnFirstTurnBlack(myPosition, board)) {
+            if (pawnFirstTurnBlack(myPosition, board) && freeSquare(myPosition, -1, board) && freeSquare(myPosition, -2, board)) {
                 pawnMoves(moves, myPosition, myPosition, -2, 0, board);
             }
         }
@@ -29,20 +29,12 @@ public class PawnMoves extends CommonMoveRules {
 
     boolean pawnFirstTurnWhite(ChessPosition pos, ChessBoard board) {
         var piece = board.getPiece(pos);
-
-        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            return piece.getTeamColor() == ChessGame.TeamColor.WHITE && pos.getRow() == 2;
-        }
-        return false;
+        return pos.getRow() == 2;
     }
 
     boolean pawnFirstTurnBlack(ChessPosition pos, ChessBoard board) {
         var piece = board.getPiece(pos);
-
-        if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
-            return piece.getTeamColor() == ChessGame.TeamColor.BLACK && pos.getRow() == 7;
-        }
-        return false;
+        return pos.getRow() == 7;
     }
 
     void pawnMoves(Collection<ChessMove> moves, ChessPosition originalPos, ChessPosition pos, int rowDir, int colDir, ChessBoard board) {
@@ -58,9 +50,17 @@ public class PawnMoves extends CommonMoveRules {
             moves.add(new ChessMove(originalPos, newPos, null));
         }
     }
+
+    boolean freeSquare(ChessPosition pos, int rowDir, ChessBoard board) {
+        var oneForward = new ChessPosition(pos.getRow() + rowDir, pos.getColumn());
+        var twoForward = new ChessPosition(oneForward.getRow() + rowDir, oneForward.getColumn());
+
+        return board.getPiece(oneForward) == null && board.getPiece(twoForward) == null;
+    }
 }
 
 //first time pawn is moved, white is at row 2, black is at row 7
+
 
 
 /*  Pawns normally may move forward one square if that square is unoccupied,
