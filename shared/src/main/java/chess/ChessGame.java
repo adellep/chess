@@ -89,7 +89,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     //throw exception if piece is null, if teamColor doesn't match teamTurn, if move isn't in validMoves
-    //if piece is a pawn and row = 1 or 8, replace with promoted piece
+    //if piece is a pawn and row == 1 or 8, replace with promoted piece
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPiece piece = board.getPiece(startPosition);
@@ -116,6 +116,13 @@ public class ChessGame {
                 board.addPiece(endPosition, null);
                 board.addPiece(endPosition, promotedPawn);
             }
+        }
+
+        if (teamTurn == TeamColor.WHITE) {
+            teamTurn = TeamColor.BLACK;
+        }
+        else {
+            teamTurn = TeamColor.WHITE;
         }
     }
 
