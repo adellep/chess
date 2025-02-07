@@ -52,8 +52,34 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
+    //return all moves a piece can legally make
+    //if no piece = null
+    //move is valid if it is a "piece move" for the piece at the input location and
+    // making that move would not leave the team’s king in danger of check
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+
+        TeamColor teamColorTurn = piece.getTeamColor();
+        Collection<ChessMove> possMoves = piece.pieceMoves(board, startPosition);
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
+        for (ChessMove move : possMoves) {
+            ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
+
+            board.addPiece(move.getEndPosition(), piece); //move piece and clear old pos
+            board.addPiece(startPosition, null);
+
+            if (!isInCheck(teamColorTurn)) {
+                validMoves.add(move);
+            }
+
+            board.addPiece(startPosition, piece); //put both back in orig pos
+            board.addPiece(move.getEndPosition(), capturedPiece);
+        }
+        return validMoves;
     }
 
     /**
