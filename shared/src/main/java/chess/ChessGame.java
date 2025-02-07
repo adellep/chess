@@ -88,12 +88,21 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
+    //throw exception if piece is null, if teamColor doesn't match teamTurn, if move isn't in validMoves
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
         ChessPiece piece = board.getPiece(startPosition);
 
         if (piece == null) {
-            throw new RuntimeException("Not implemented");
+            throw new InvalidMoveException("Not implemented");
+        }
+        if (piece.getTeamColor() != teamTurn) {
+            throw new InvalidMoveException("Not implemented");
+        }
+
+        Collection<ChessMove> validMoves = validMoves(startPosition);
+        if (!validMoves.contains(move)) {
+            throw new InvalidMoveException("Not implemented");
         }
     }
 
