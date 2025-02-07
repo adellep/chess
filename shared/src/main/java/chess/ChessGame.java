@@ -89,7 +89,12 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        ChessPiece piece = board.getPiece(startPosition);
+
+        if (piece == null) {
+            throw new RuntimeException("Not implemented");
+        }
     }
 
     /**
