@@ -94,16 +94,20 @@ public class ChessGame {
         ChessPiece piece = board.getPiece(startPosition);
 
         if (piece == null) {
-            throw new InvalidMoveException("Not implemented");
+            throw new InvalidMoveException("no piece at this position");
         }
         if (piece.getTeamColor() != teamTurn) {
-            throw new InvalidMoveException("Not implemented");
+            throw new InvalidMoveException("not your turn");
         }
 
         Collection<ChessMove> validMoves = validMoves(startPosition);
         if (!validMoves.contains(move)) {
-            throw new InvalidMoveException("Not implemented");
+            throw new InvalidMoveException("invalid move for this piece");
         }
+
+        ChessPosition endPosition = move.getEndPosition();
+        board.addPiece(endPosition, piece); //move piece and make old position empty
+        board.addPiece(startPosition, null);
     }
 
     /**
