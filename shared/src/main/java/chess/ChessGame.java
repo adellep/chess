@@ -120,8 +120,8 @@ public class ChessGame {
             return false;
         }
 
-        Collection<ChessPiece> pieces = getAllTeamPieces(teamColor);
-        for (ChessPiece piece : pieces) {
+        Collection<ChessPiece> teamPieces = getAllTeamPieces(teamColor);
+        for (ChessPiece piece : teamPieces) {
             ChessPosition piecePos = getPosition(piece);
             Collection<ChessMove> moves = piece.pieceMoves(board, piecePos);
 
@@ -179,8 +179,33 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
+    //king is not in check, and no legal move available
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+
+        Collection<ChessPiece> teamPieces = getAllTeamPieces(teamColor);
+        for (ChessPiece piece : teamPieces) {
+            ChessPosition piecePos = getPosition(piece);
+            Collection<ChessMove> moves = piece.pieceMoves(board, piecePos);
+
+            for (ChessMove move : moves) {
+                ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
+                board.addPiece(move.getEndPosition(), piece); //move the piece
+                board.addPiece(piecePos, null); //clear old piece pos
+
+                boolean stillChecked = isInCheck(teamColor);
+
+                board.addPiece(piecePos, piece); //put piece back
+                board.addPiece(move.getEndPosition(), capturedPiece); //put captured piece back
+
+                if (!stillChecked) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
