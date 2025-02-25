@@ -12,4 +12,10 @@ public class MemoryAuthDAO implements AuthDAO {
     public void clear() throws DataAccessException {
         tokens.clear();
     }
+
+    @Override
+    public AuthData createAuth(AuthData authData) throws DataAccessException {
+        tokens.put(authData.authToken(), authData);
+        return authData;
+    }
 }

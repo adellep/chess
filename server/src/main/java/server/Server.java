@@ -2,8 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import request.RegisterRequest;
 import result.ClearResult;
 import service.ClearService;
+import service.RegisterService;
 import spark.*;
 
 public class Server {
@@ -25,6 +27,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
+        Spark.post("/user", this::createUser);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -44,6 +47,16 @@ public class Server {
         }
         var g = new Gson();
         return g.toJson(clearResult);
+    }
+
+    private String createUser(Request request, Response response) throws DataAccessException {
+        var g = new Gson();
+        var newUser = g.fromJson(request.body(), RegisterRequest.class);
+        RegisterService registerService = new RegisterService(this.userDAO, this.authDAO);
+        var result = registerService.register(newUser);
+
+        response.status(200);
+        return g.toJson(result);
     }
 
     public void stop() {
