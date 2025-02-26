@@ -2,9 +2,11 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
+import request.LoginRequest;
 import request.RegisterRequest;
 import result.ClearResult;
 import service.ClearService;
+import service.LoginService;
 import service.RegisterService;
 import spark.*;
 
@@ -28,6 +30,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::createUser);
+        Spark.post("/session", this::loginUser);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -63,6 +66,16 @@ public class Server {
 
         response.status(200);
         return g.toJson(result);
+    }
+
+    private String loginUser(Request request, Response response) throws ResponseException {
+        var g = new Gson();
+        var loginRequest = g.fromJson(request.body(), LoginRequest.class);
+        var loginService = new LoginService(new MemoryUserDAO(), new MemoryAuthDAO());
+        var loginResult = loginService.login(loginRequest);
+
+        response.status(200);
+        return g.toJson(loginResult);
     }
 
     public void stop() {
