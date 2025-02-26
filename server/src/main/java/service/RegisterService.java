@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import dataaccess.ResponseException;
 import dataaccess.UserDAO;
 import model.AuthData;
 import model.UserData;
@@ -21,14 +22,17 @@ public class RegisterService {
         this.authDAO = authDAO;
     }
 
-    public RegisterResult register(RegisterRequest request) throws DataAccessException {
-        if (request.username() == null || request.password() == null | request.email() == null) {
-            throw new DataAccessException("Error 400");
+    public RegisterResult register(RegisterRequest request) throws ResponseException {
+        //throw new DataAccessException("Error 400");
+        if (request.username() == null || request.password() == null | request.email() == null ||
+                request.username().isEmpty() || request.password().isEmpty() || request.email().isEmpty()) {
+            throw new ResponseException(400, "Error: bad request");
         }
         try {
             UserData userFound = userDAO.getUser(request.username());
             if (userFound != null) {
-                throw new DataAccessException("Error 403");
+                //throw new DataAccessException("Error 403");
+                throw new ResponseException(403, "Error: already taken");
             }
 
             UserData newUser = new UserData(request.username(), request.password(), request.email());
@@ -40,7 +44,7 @@ public class RegisterService {
 
             return new RegisterResult(newUser.username(), authToken);
         } catch (DataAccessException e) {
-            throw new DataAccessException("Error 500");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 

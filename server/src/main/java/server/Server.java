@@ -28,12 +28,18 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::createUser);
+        Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private void exceptionHandler(ResponseException e, Request request, Response response) {
+        response.status(e.getStatusCode());
+        response.body(new Gson().toJson(new ClearResult(e.getMessage())));
     }
 
     private String clear(Request request, Response response) {
@@ -49,7 +55,7 @@ public class Server {
         return g.toJson(clearResult);
     }
 
-    private String createUser(Request request, Response response) throws DataAccessException {
+    private String createUser(Request request, Response response) throws ResponseException {
         var g = new Gson();
         var newUser = g.fromJson(request.body(), RegisterRequest.class);
         RegisterService registerService = new RegisterService(this.userDAO, this.authDAO);

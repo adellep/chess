@@ -23,8 +23,8 @@ public class ClearService {
             gameDAO.clear();;
             authDAO.clear();
             return new ClearResult(null);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            return new ClearResult("not cleared");
         }
     }
 }
