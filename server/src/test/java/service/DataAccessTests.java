@@ -91,4 +91,14 @@ public class DataAccessTests {
         Assertions.assertNotNull(response);
         Assertions.assertNull(authDAO.getAuth(authToken));
     }
+
+    @Test
+    public void logoutFail() { //uses wrong auth token
+        var authDAO = new MemoryAuthDAO();
+        var logoutService = new LogoutService(authDAO);
+        var wrongAuthToken = "b";
+        var logoutRequest = new LogoutRequest(wrongAuthToken);
+
+        Assertions.assertThrows(ResponseException.class, () -> logoutService.logout(logoutRequest));
+    }
 }
