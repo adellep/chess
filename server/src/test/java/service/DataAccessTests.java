@@ -31,4 +31,16 @@ public class DataAccessTests {
         Assertions.assertNotNull(userDAO.getUser("a"));
         Assertions.assertEquals("a", response.username());
     }
+
+    @Test
+    public void registerFail() throws DataAccessException, ResponseException { //user exists already
+        var userDAO = new MemoryUserDAO();
+        var authDAO = new MemoryAuthDAO();
+        var registerService = new RegisterService(userDAO, authDAO);
+        var request1 = new RegisterRequest("a", "p", "a@gmail.com");
+        var request2 = new RegisterRequest("a", "b", "b@gmail.com");
+        var response = registerService.register(request1);
+
+        Assertions.assertThrows(ResponseException.class, () -> registerService.register(request2));
+    }
 }
