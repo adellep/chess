@@ -3,10 +3,12 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.*;
 import request.LoginRequest;
+import request.LogoutRequest;
 import request.RegisterRequest;
 import result.ClearResult;
 import service.ClearService;
 import service.LoginService;
+import service.LogoutService;
 import service.RegisterService;
 import spark.*;
 
@@ -31,6 +33,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::createUser);
         Spark.post("/session", this::loginUser);
+        Spark.delete("/session", this::logoutUser);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -76,6 +79,16 @@ public class Server {
 
         response.status(200);
         return g.toJson(loginResult);
+    }
+
+    private String logoutUser(Request request, Response response) throws ResponseException {
+        var g = new Gson();
+        var logoutRequest = g.fromJson(request.body(), LogoutRequest.class);
+        var logoutService = new LogoutService(this.authDAO);
+        var logoutResult = logoutService.logout(logoutRequest);
+
+        response.status(200);
+        return g.toJson(logoutResult);
     }
 
     public void stop() {

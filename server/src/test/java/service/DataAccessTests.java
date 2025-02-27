@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -75,5 +76,19 @@ public class DataAccessTests {
         var wrongPassword = new LoginRequest("a", "b");
 
         Assertions.assertThrows(ResponseException.class, () -> loginService.login(wrongPassword));
+    }
+
+    @Test
+    public void logoutSuccess() throws ResponseException, DataAccessException {
+        var authDAO = new MemoryAuthDAO();
+        var logoutService = new LogoutService(authDAO);
+        var authToken = "1111";
+        authDAO.createAuth(new AuthData(authToken, "a"));
+
+        var request = new LogoutRequest(authToken);
+        var response = logoutService.logout(request);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNull(authDAO.getAuth(authToken));
     }
 }
