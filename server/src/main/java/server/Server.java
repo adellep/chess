@@ -83,7 +83,9 @@ public class Server {
 
     private String logoutUser(Request request, Response response) throws ResponseException {
         var g = new Gson();
-        var logoutRequest = g.fromJson(request.body(), LogoutRequest.class);
+        //var logoutRequest = g.fromJson(request.body(), LogoutRequest.class);
+        String authToken = request.headers("Authorization");
+        var logoutRequest = new LogoutRequest(authToken);
         var logoutService = new LogoutService(this.authDAO);
         var logoutResult = logoutService.logout(logoutRequest);
 
