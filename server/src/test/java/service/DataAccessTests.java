@@ -1,8 +1,11 @@
 package service;
 
 import dataaccess.*;
+import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import request.LoginRequest;
+import request.LogoutRequest;
 import request.RegisterRequest;
 
 public class DataAccessTests {
@@ -42,5 +45,35 @@ public class DataAccessTests {
         var response = registerService.register(request1);
 
         Assertions.assertThrows(ResponseException.class, () -> registerService.register(request2));
+    }
+
+    @Test
+    public void loginSuccess() throws ResponseException {
+        var userDAO = new MemoryUserDAO();
+        var authDAO = new MemoryAuthDAO();
+        var loginService = new LoginService(userDAO, authDAO);
+        var currentUser = new UserData("a", "p", "a@gmail.com");
+        userDAO.addUser(currentUser);
+
+        var request = new LoginRequest("a", "p");
+        var response = loginService.login(request);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertNotNull(response.authToken());
+        Assertions.assertEquals("a", response.username());
+        Assertions.assertFalse(response.authToken().isEmpty());
+    }
+
+    @Test
+    public void loginFail() { //wrong password
+        var userDAO = new MemoryUserDAO();
+        var authDAO = new MemoryAuthDAO();
+        var loginService = new LoginService(userDAO, authDAO);
+        var currentUser = new UserData("a", "p", "a@gmail.com");
+        userDAO.addUser(currentUser);
+
+        var wrongPassword = new LoginRequest("a", "b");
+
+        Assertions.assertThrows(ResponseException.class, () -> loginService.login(wrongPassword));
     }
 }
