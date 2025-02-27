@@ -9,6 +9,7 @@ import model.UserData;
 import request.LoginRequest;
 import result.LoginResult;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class LoginService {
@@ -28,7 +29,7 @@ public class LoginService {
             if (userFound == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
-            if (userFound.password() != request.password()) {
+            if (!Objects.equals(userFound.password(), request.password())) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 

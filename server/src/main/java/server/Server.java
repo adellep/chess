@@ -71,7 +71,7 @@ public class Server {
     private String loginUser(Request request, Response response) throws ResponseException {
         var g = new Gson();
         var loginRequest = g.fromJson(request.body(), LoginRequest.class);
-        var loginService = new LoginService(new MemoryUserDAO(), new MemoryAuthDAO());
+        var loginService = new LoginService(this.userDAO, this.authDAO);
         var loginResult = loginService.login(loginRequest);
 
         response.status(200);
