@@ -33,6 +33,7 @@ public class Server {
         Spark.post("/session", this::loginUser);
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createGame);
+        Spark.get("/game", this::listGames);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -109,6 +110,16 @@ public class Server {
 
             return g.toJson(new ClearResult(e.getMessage()));
         }
+    }
+
+    private String listGames(Request request, Response response) throws ResponseException, DataAccessException {
+        var g = new Gson();
+        String authToken =  request.headers("Authorization");
+        var listGamesService = new ListGamesService(this.authDAO, this.gameDAO);
+        var listGamesResult = listGamesService.listGames(authToken);
+
+        response.status(200);
+        return g.toJson(listGamesResult);
     }
 
     public void stop() {
