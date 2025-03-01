@@ -98,10 +98,17 @@ public class Server {
         String gameName = request.body();
         var createGameRequest = new CreateGameRequest(authToken, gameName);
         var createGameService = new CreateGameService(this.authDAO, this.gameDAO);
-        var createGameResult = createGameService.createGame(createGameRequest);
 
-        response.status(200);
-        return g.toJson(createGameResult);
+        try {
+            var createGameResult = createGameService.createGame(createGameRequest);
+
+            response.status(200);
+            return g.toJson(createGameResult);
+        } catch (ResponseException e) {
+            response.status(e.getStatusCode());
+
+            return g.toJson(new ClearResult(e.getMessage()));
+        }
     }
 
     public void stop() {
