@@ -2,10 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.*;
-import request.CreateGameRequest;
-import request.LoginRequest;
-import request.LogoutRequest;
-import request.RegisterRequest;
+import request.*;
 import result.ClearResult;
 import service.*;
 import spark.*;
@@ -34,6 +31,8 @@ public class Server {
         Spark.delete("/session", this::logoutUser);
         Spark.post("/game", this::createGame);
         Spark.get("/game", this::listGames);
+        Spark.put("/game", this::joinGame);
+
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -120,6 +119,17 @@ public class Server {
 
         response.status(200);
         return g.toJson(listGamesResult);
+    }
+
+    private String joinGame(Request request, Response response) throws ResponseException {
+        var g = new Gson();
+        String authToken = request.headers("Authorization");
+        var body = g.fromJson(request.body(), JoinGameRequest.class);
+        var joinGameService = new JoinGameService(this.authDAO, this.gameDAO);
+        var joinGameResult = joinGameService.joinGame(new JoinGameRequest(authToken, body.playerColor(), body.gameID()));
+
+        response.status(200);
+        return g.toJson(joinGameResult);
     }
 
     public void stop() {
