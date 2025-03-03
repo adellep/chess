@@ -27,6 +27,11 @@ public class JoinGameService {
             }
 
             var gameData = gameDAO.getGame(request.gameID());
+            if (gameData == null || request.playerColor() == null) {
+                throw new ResponseException(400, "Error: bad request");
+            }
+
+            gameDAO.addPlayer(request.gameID(), authData.username(), request.playerColor());
 
             return new JoinGameResult(true, "added player");
         } catch (DataAccessException e) {
