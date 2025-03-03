@@ -126,10 +126,16 @@ public class Server {
         String authToken = request.headers("Authorization");
         var body = g.fromJson(request.body(), JoinGameRequest.class);
         var joinGameService = new JoinGameService(this.authDAO, this.gameDAO);
-        var joinGameResult = joinGameService.joinGame(new JoinGameRequest(authToken, body.playerColor(), body.gameID()));
 
-        response.status(200);
-        return g.toJson(joinGameResult);
+        try {
+            var joinGameResult = joinGameService.joinGame(new JoinGameRequest(authToken, body.playerColor(), body.gameID()));
+
+            response.status(200);
+            return g.toJson(joinGameResult);
+        } catch (ResponseException e) {
+            response.status(e.getStatusCode());
+            return g.toJson(new ClearResult(e.getMessage()));
+        }
     }
 
     public void stop() {

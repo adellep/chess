@@ -46,7 +46,8 @@ public class MemoryGameDAO implements GameDAO {
             return false;
         }
 
-        return (playerColor == "white" && game.whiteUsername() == null) || (playerColor == "black" && game.blackUsername() == null);
+        return (playerColor.toLowerCase().equals("white") && game.whiteUsername() == null) ||
+                (playerColor.toLowerCase().equals("black") && game.blackUsername() == null);
     }
 
     @Override
@@ -57,10 +58,10 @@ public class MemoryGameDAO implements GameDAO {
             throw new DataAccessException("No game found");
         }
 
-        String whiteUsername = playerColor == "white" ? username : game.whiteUsername();
-        String blackUsername = playerColor == "black" ? username : game.blackUsername();
+        String whiteUsername = playerColor.toLowerCase().equals("white") ? username : game.whiteUsername();
+        String blackUsername = playerColor.toLowerCase().equals("black") ? username : game.blackUsername();
 
-        GameData updateGame = new GameData(game.gameID(), game.gameName(), whiteUsername, blackUsername, game.game());
+        GameData updateGame = new GameData(game.gameID(), whiteUsername, blackUsername, game.gameName(), game.game());
         games.put(gameID, updateGame);
     }
 }
