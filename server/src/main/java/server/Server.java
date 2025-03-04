@@ -95,7 +95,9 @@ public class Server {
     private String createGame(Request request, Response response) throws ResponseException {
         var g = new Gson();
         String authToken = request.headers("Authorization");
-        String gameName = request.body();
+        //String gameName = request.body(); treats like json object?
+        var gameRequest = g.fromJson(request.body(), CreateGameRequest.class);
+        String gameName = gameRequest.getGameName();
         var createGameRequest = new CreateGameRequest(authToken, gameName);
         var createGameService = new CreateGameService(this.authDAO, this.gameDAO);
 
