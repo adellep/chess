@@ -26,10 +26,7 @@ public class LoginService {
         try {
             UserData userFound = userDAO.getUser(request.username());
 
-            if (userFound == null) {
-                throw new ResponseException(401, "Error: unauthorized");
-            }
-            if (!Objects.equals(userFound.password(), request.password())) {
+            if (userFound == null || !Objects.equals(userFound.password(), request.password())) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 

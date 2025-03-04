@@ -113,12 +113,18 @@ public class Server {
 
     private String listGames(Request request, Response response) throws ResponseException, DataAccessException {
         var g = new Gson();
-        String authToken =  request.headers("Authorization");
+        String authToken = request.headers("Authorization");
         var listGamesService = new ListGamesService(this.authDAO, this.gameDAO);
-        var listGamesResult = listGamesService.listGames(authToken);
 
-        response.status(200);
-        return g.toJson(listGamesResult);
+        try {
+            var listGamesResult = listGamesService.listGames(authToken);
+
+            response.status(200);
+            return g.toJson(listGamesResult);
+        } catch (ResponseException e) {
+            response.status(e.getStatusCode());
+            return g.toJson(new ClearResult(e.getMessage()));
+        }
     }
 
     private String joinGame(Request request, Response response) throws ResponseException {

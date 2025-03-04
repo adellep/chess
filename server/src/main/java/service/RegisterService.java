@@ -24,7 +24,7 @@ public class RegisterService {
 
     public RegisterResult register(RegisterRequest request) throws ResponseException {
         //throw new DataAccessException("Error 400");
-        if (request.username() == null || request.password() == null | request.email() == null ||
+        if (request.username() == null || request.password() == null || request.email() == null ||
                 request.username().isEmpty() || request.password().isEmpty() || request.email().isEmpty()) {
             throw new ResponseException(400, "Error: bad request");
         }

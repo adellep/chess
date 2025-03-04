@@ -21,9 +21,9 @@ public class CreateGameService {
 
     public CreateGameResult createGame(CreateGameRequest request) throws ResponseException {
         try {
-            var authToken = authDAO.getAuth(request.authToken());
+            var authData = authDAO.getAuth(request.authToken());
 
-            if (authToken == null) {
+            if (authData == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 

@@ -17,8 +17,6 @@ public class JoinGameService {
         this.gameDAO = gameDAO;
     }
 
-
-
     public JoinGameResult joinGame(JoinGameRequest request) throws ResponseException {
         try {
             var authData = authDAO.getAuth(request.authToken());
@@ -27,7 +25,12 @@ public class JoinGameService {
             }
 
             var gameData = gameDAO.getGame(request.gameID());
-            if (gameData == null || request.playerColor() == null) {
+            if (gameData == null || request.playerColor() == null || request.playerColor().isEmpty()) {
+                throw new ResponseException(400, "Error: bad request");
+            }
+
+            String playerColor = request.playerColor().toLowerCase();
+            if (!playerColor.equals("white") && !playerColor.equals("black")) {
                 throw new ResponseException(400, "Error: bad request");
             }
             if (!gameDAO.freePlayerColor(request.gameID(), request.playerColor())) {
@@ -35,10 +38,10 @@ public class JoinGameService {
             }
 
             gameDAO.addPlayer(request.gameID(), authData.username(), request.playerColor());
-
             return new JoinGameResult(true, "added player");
-        } catch (DataAccessException e) {
-            throw new ResponseException(500, e.getMessage());
+
+        } catch (DataAccessException ex) {
+            throw new ResponseException(500, ex.getMessage());
         }
     }
 }
