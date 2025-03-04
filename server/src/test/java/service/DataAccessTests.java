@@ -5,6 +5,7 @@ import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import request.CreateGameRequest;
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
@@ -101,4 +102,29 @@ public class DataAccessTests {
 
         Assertions.assertThrows(ResponseException.class, () -> logoutService.logout(logoutRequest));
     }
+
+    @Test
+    public void createGameSuccess() throws ResponseException, DataAccessException {
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
+        var createGameService = new CreateGameService(authDAO, gameDAO);
+        var authData = new AuthData("1", "a");
+        authDAO.createAuth(authData);
+
+        var request = new CreateGameRequest("1", "Game1");
+        var response = createGameService.createGame(request);
+
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    public void createGameFail() {
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
+        var createGameService = new CreateGameService(authDAO, gameDAO);
+        var wrongAuth = new CreateGameRequest("2", "Game1");
+
+        Assertions.assertThrows(ResponseException.class, () -> createGameService.createGame(wrongAuth));
+    }
+
 }
