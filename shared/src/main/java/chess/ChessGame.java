@@ -141,13 +141,22 @@ public class ChessGame {
                 ChessPosition pos = new ChessPosition(row, col);
                 ChessPiece piece = board.getPiece(pos);
 
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    for (ChessMove moves : piece.pieceMoves(board, pos)) {
-                        if (moves.getEndPosition().equals(kingPos)) {
-                            return true;
-                        }
-                    }
+                if (pieceThreatened(piece, teamColor, pos, kingPos)) {
+                    return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean pieceThreatened(ChessPiece piece, TeamColor teamColor, ChessPosition pos, ChessPosition kingPos) {
+        if (piece == null || piece.getTeamColor() == teamColor) {
+            return false;
+        }
+
+        for (ChessMove move : piece.pieceMoves(board, pos)) {
+            if (move.getEndPosition().equals(kingPos)) {
+                return true;
             }
         }
         return false;
@@ -245,19 +254,19 @@ public class ChessGame {
             return false;
         }
 
-        Collection<ChessPiece> teamPieces = getAllTeamPieces(teamColor);
-        for (ChessPiece piece : teamPieces) {
-            ChessPosition piecePos = getPosition(piece);
-            Collection<ChessMove> moves = piece.pieceMoves(board, piecePos);
+        Collection<ChessPiece> allTeamPieces = getAllTeamPieces(teamColor);
+        for (ChessPiece onePiece : allTeamPieces) {
+            ChessPosition piecePos = getPosition(onePiece);
+            Collection<ChessMove> moves = onePiece.pieceMoves(board, piecePos);
 
             for (ChessMove move : moves) {
                 ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
-                board.addPiece(move.getEndPosition(), piece); //move the piece
+                board.addPiece(move.getEndPosition(), onePiece); //move the piece
                 board.addPiece(piecePos, null); //clear old piece pos
 
                 boolean stillChecked = isInCheck(teamColor);
 
-                board.addPiece(piecePos, piece); //put piece back
+                board.addPiece(piecePos, onePiece); //put piece back
                 board.addPiece(move.getEndPosition(), capturedPiece); //put captured piece back
 
                 if (!stillChecked) {
