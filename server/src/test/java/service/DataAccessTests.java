@@ -6,10 +6,8 @@ import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import request.CreateGameRequest;
-import request.LoginRequest;
-import request.LogoutRequest;
-import request.RegisterRequest;
+import request.*;
+import result.JoinGameResult;
 
 import javax.xml.crypto.Data;
 
@@ -156,6 +154,36 @@ public class DataAccessTests {
         var listGamesService = new ListGamesService(authDAO, gameDAO);
 
         Assertions.assertThrows(ResponseException.class, () -> listGamesService.listGames("wrongAuthToken"));
+    }
+
+    @Test
+    public void joinGameSuccess() throws ResponseException, DataAccessException {
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
+        var joinGameService = new JoinGameService(authDAO, gameDAO);
+        var authData = new AuthData("1", "a");
+        authDAO.createAuth(authData);
+
+        var game = new GameData(1, null, "user2", "Game1", null);
+        gameDAO.createGame(game);
+
+        var joinRequest = new JoinGameRequest("1", "white", 1);
+        var joinResult = joinGameService.joinGame(joinRequest);
+
+        Assertions.assertNotNull(joinResult);
+    }
+
+    @Test
+    public void joinGameFail() throws DataAccessException {
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
+        var joinGameService = new JoinGameService(authDAO, gameDAO);
+        var game = new GameData(1, "Game1", "user1", null, null);
+        gameDAO.createGame(game);
+
+        var joinRequest = new JoinGameRequest("wrongAuthToken", "white", 1);
+
+        Assertions.assertThrows(ResponseException.class, () -> joinGameService.joinGame(joinRequest));
     }
 
 }
