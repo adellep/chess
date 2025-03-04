@@ -2,6 +2,7 @@ package service;
 
 import dataaccess.*;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import request.CreateGameRequest;
 import request.LoginRequest;
 import request.LogoutRequest;
 import request.RegisterRequest;
+
+import javax.xml.crypto.Data;
 
 public class DataAccessTests {
 
@@ -125,6 +128,34 @@ public class DataAccessTests {
         var wrongAuth = new CreateGameRequest("2", "Game1");
 
         Assertions.assertThrows(ResponseException.class, () -> createGameService.createGame(wrongAuth));
+    }
+
+    @Test
+    public void listGamesSuccess() throws ResponseException, DataAccessException {
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
+        var listGamesService = new ListGamesService(authDAO, gameDAO);
+        var authData = new AuthData("1", "a");
+        authDAO.createAuth(authData);
+
+        var game1 = new GameData(1, "Game1", "user1", null, null);
+        var game2 = new GameData(2, "Game2", null, "user2", null);
+        gameDAO.createGame(game1);
+        gameDAO.createGame(game2);
+
+        var listGamesResult = listGamesService.listGames("1");
+
+        Assertions.assertNotNull(listGamesResult);
+        Assertions.assertEquals(2, listGamesResult.games().size());
+    }
+
+    @Test
+    public void listGamesFail() {
+        var authDAO = new MemoryAuthDAO();
+        var gameDAO = new MemoryGameDAO();
+        var listGamesService = new ListGamesService(authDAO, gameDAO);
+
+        Assertions.assertThrows(ResponseException.class, () -> listGamesService.listGames("wrongAuthToken"));
     }
 
 }
