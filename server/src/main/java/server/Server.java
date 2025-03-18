@@ -15,6 +15,7 @@ public class Server {
 
     public Server() {
         this.userDAO = new MemoryUserDAO();
+        //this.userDAO = new UserDAOMySql();
         this.gameDAO = new MemoryGameDAO();
         this.authDAO = new MemoryAuthDAO();
     }
