@@ -14,10 +14,18 @@ public class Server {
     final private AuthDAO authDAO;
 
     public Server() {
-        this.userDAO = new MemoryUserDAO();
-        //this.userDAO = new UserDAOMySql();
-        this.gameDAO = new MemoryGameDAO();
-        this.authDAO = new MemoryAuthDAO();
+
+        try {
+            DatabaseManager.createDatabase();
+            this.userDAO = new UserDAOMySql();
+            this.gameDAO = new GameDAOMySql();
+            this.authDAO = new AuthDAOMySql();
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("failed to initialize db", ex);
+        }
+//        this.userDAO = new MemoryUserDAO();
+//        this.gameDAO = new MemoryGameDAO();
+//        this.authDAO = new MemoryAuthDAO();
     }
 
     public int run(int desiredPort) {
