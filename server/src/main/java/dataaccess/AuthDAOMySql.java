@@ -60,7 +60,7 @@ public class AuthDAOMySql implements AuthDAO {
             var statement = """
                     CREATE TABLE IF NOT EXISTS  auth(
                     authToken varchar(256) NOT NULL,
-                    username varchar(256) NOT NULL,
+                    username int NOT NULL,
                     PRIMARY KEY (authToken),
                     FOREIGN KEY (username) REFERENCES user(id) ON DELETE CASCADE
                     )

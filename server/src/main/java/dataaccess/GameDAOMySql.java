@@ -70,7 +70,7 @@ public class GameDAOMySql implements GameDAO {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = """
                     CREATE TABLE IF NOT EXISTS  game(
-                    gameID PRIMARY KEY AUTO_INCREMENT,
+                    gameID int PRIMARY KEY AUTO_INCREMENT,
                     whiteUsername int DEFAULT NULL,
                     blackUsername int DEFAULT NULL,
                     gameName varchar(256) NOT NULL,
