@@ -48,6 +48,8 @@ public class AuthDAOMySql implements AuthDAO {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM auth WHERE authToken = ?";
+        DatabaseManager.executeUpdate(statement, authToken);
 
     }
 
