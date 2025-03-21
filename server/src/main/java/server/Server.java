@@ -34,6 +34,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        Spark.post("/clear", this::clear); //for curl 200 ok
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::createUser);
         Spark.post("/session", this::loginUser);

@@ -2,6 +2,9 @@ package dataaccess;
 
 import model.GameData;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,12 +18,16 @@ public class GameDAOMySql implements GameDAO {
 
     @Override
     public void clear() throws DataAccessException {
-
+        var statement = "DELETE FROM game";
+        DatabaseManager.executeUpdate(statement);
     }
 
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
-        return null;
+        var statement = "INSERT INTO game (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
+        DatabaseManager.executeUpdate(statement, gameData.gameID(), gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
+
+        return gameData;
     }
 
     @Override
@@ -42,30 +49,7 @@ public class GameDAOMySql implements GameDAO {
     public void addPlayer(int gameID, String username, String playerColor) throws DataAccessException {
 
     }
-
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
-
+//gameState TEXT NOT NULL? game vs gameState
     private void configureDatabase() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = """
@@ -74,9 +58,8 @@ public class GameDAOMySql implements GameDAO {
                     whiteUsername int DEFAULT NULL,
                     blackUsername int DEFAULT NULL,
                     gameName varchar(256) NOT NULL,
-                    gameState TEXT NOT NULL,
-                    FOREIGN KEY (whiteUsername) REFERENCES user(id) ON DELETE SET NULL,
-                    FOREIGN KEY (blackUsername) REFERENCES user(id) ON DELETE SET NULL
+                    game TEXT NOT NULL
+                  
                     )
                     """;
             try (var ps = conn.prepareStatement(statement)) {

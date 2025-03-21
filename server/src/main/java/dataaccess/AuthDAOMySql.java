@@ -2,6 +2,9 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -14,16 +17,32 @@ public class AuthDAOMySql implements AuthDAO {
 
     @Override
     public void clear() throws DataAccessException {
-
+        var statement = "DELETE FROM auth";
+        DatabaseManager.executeUpdate(statement);
     }
 
     @Override
     public AuthData createAuth(AuthData authData) throws DataAccessException {
-        return null;
+        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+        DatabaseManager.executeUpdate(statement, authData.authToken(), authData.username());
+
+        return authData;
     }
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
+        var statement = "SELECT * FROM auth WHERE authToken=?";
+        try (var conn = DatabaseManager.getConnection();
+             var ps = conn.prepareStatement(statement)) {
+            ps.setString(1, authToken);
+            try (var rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new AuthData(rs.getString("authToken"), rs.getString("username"));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Error retrieving auth token: " + ex.getMessage());
+        }
         return null;
     }
 
@@ -32,37 +51,13 @@ public class AuthDAOMySql implements AuthDAO {
 
     }
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
-
     private void configureDatabase() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = """
                     CREATE TABLE IF NOT EXISTS  auth(
                     authToken varchar(256) NOT NULL,
-                    username int NOT NULL,
-                    PRIMARY KEY (authToken),
-                    FOREIGN KEY (username) REFERENCES user(id) ON DELETE CASCADE
+                    username varchar(256) NOT NULL,
+                    PRIMARY KEY (authToken)
                     )
                     """;
             try (var ps = conn.prepareStatement(statement)) {
