@@ -44,8 +44,9 @@ public class UserDAOMySql implements UserDAO {
     }
 
     @Override
-    public void addUser(UserData userData) {
-
+    public void addUser(UserData userData) throws DataAccessException {
+        var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+        DatabaseManager.executeUpdate(statement, userData.username(), userData.password(), userData.email());
     }
 
     private void configureDatabase() throws DataAccessException {
