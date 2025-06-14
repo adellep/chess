@@ -56,3 +56,11 @@ public class ChessPosition {
         return String.format("[%s, %s]", getRow(), getColumn());
     }
 }
+
+
+
+
+
+
+
+

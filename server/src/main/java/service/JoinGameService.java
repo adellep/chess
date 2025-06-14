@@ -25,8 +25,6 @@ public class JoinGameService {
             if (gameData == null || request.playerColor() == null) {
                 throw new ResponseException(400, "Error: bad request");
             }
-
-
             if (!gameDAO.freePlayerColor(request.gameID(), request.playerColor())) {
                 throw new ResponseException(403, "Error: already taken");
             }

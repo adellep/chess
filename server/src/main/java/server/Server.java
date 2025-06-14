@@ -14,10 +14,17 @@ public class Server {
 
 
     public Server() {
-        this.userDao = new UserDAOMemory();
-        this.gameDAO = new GameDAOMemory();
-        this.authDAO = new AuthDAOMemory();
+        try {
+            this.userDao = new UserDAOMySql();
+            this.gameDAO = new GameDAOMySql();
+            this.authDAO = new AuthDAOMySql();
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Failed to initialize database connections", ex);
+        }
     }
+    //this.userDao = new UserDAOMemory();
+    //this.gameDAO = new GameDAOMemory();
+    //this.authDAO = new AuthDAOMemory();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -99,7 +106,6 @@ public class Server {
         String authToken = req.headers("Authorization");
         String gameName = req.body();
         //String gameName = "game1";
-
         var createGameRequest = new CreateGameRequest(authToken, gameName);
         var createGameService = new CreateGameService(this.authDAO, this.gameDAO);
 

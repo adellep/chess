@@ -10,5 +10,4 @@ public interface GameDAO {
     GameData getGame(int gameID) throws DataAccessException;
     boolean freePlayerColor(int gameID, String playerColor) throws DataAccessException;
     void addPlayer(int gameID, String username, String playerColor) throws DataAccessException;
-
 }
