@@ -7,9 +7,6 @@ public class MySqlDataAccess {
     public MySqlDataAccess() throws DataAccessException {
         configureDatabase();
     }
-//user table: username, hashed password, email
-//game table: gameID, white, black, gameName, ChessGame state
-//auth table: authtoken, username
 
     private final String[] createStatements = {
             """
@@ -41,16 +38,13 @@ public class MySqlDataAccess {
         )
         """
     };
-    //foreign key on delete set null - prevent deletion of reference user if related records in table
-    //foreign key on delete cascade -if user is deleted, all rows in table automatically deleted
-    //good practice?
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : createStatements) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate(); //exUpdate for inserting, updating, and deleting records, need later
+                    preparedStatement.executeUpdate();
                 }
             }
         } catch (SQLException ex) {

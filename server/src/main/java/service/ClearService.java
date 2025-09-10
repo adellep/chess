@@ -2,6 +2,8 @@ package service;
 
 import dataaccess.*;
 
+import service.ResultMessage; // Ensure this import is correct
+
 public class ClearService {
     private final UserDAO userDAO;
     private final GameDAO gameDAO;

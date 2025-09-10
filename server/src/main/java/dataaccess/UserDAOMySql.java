@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 
@@ -12,11 +13,17 @@ public class UserDAOMySql implements UserDAO {
         configureDatabase();
     }
 
-    @Override
-    public void addUser(UserData userData) throws DataAccessException {
-        var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
-        DatabaseManager.executeUpdate(statement, userData.username(), userData.password(), userData.email());
+@Override
+public void addUser(UserData userData) throws DataAccessException {
+    String keepPassword = userData.password();
+
+    if (keepPassword != null && !keepPassword.startsWith("$2a$")) {
+        keepPassword = BCrypt.hashpw(keepPassword, BCrypt.gensalt());
     }
+
+    var statement = "INSERT INTO user (username, password, email) VALUES (?, ?, ?)";
+    DatabaseManager.executeUpdate(statement, userData.username(), keepPassword, userData.email());
+}
 
     public UserData getUser(String username) throws DataAccessException {
         var statement = "SELECT * FROM user WHERE username=?";
@@ -44,15 +51,9 @@ public class UserDAOMySql implements UserDAO {
         return getUser(userData.username());
     }
 
-//    @Override
-//    public void deleteUser(String username) throws DataAccessException {
-//        var statement = "DELETE FROM user WHERE username=?";
-//        DatabaseManager.executeUpdate(statement, username);
-//    }
-
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE user";
+        var statement = "DELETE FROM user";
         DatabaseManager.executeUpdate(statement);
     }
 

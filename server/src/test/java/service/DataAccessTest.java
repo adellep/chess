@@ -17,6 +17,7 @@ public class DataAccessTest {
         var authDao = new AuthDAOMemory();
         var clearService = new ClearService(userDao, gameDAO, authDao);
         var result = clearService.clear();
+
         Assertions.assertNull(result.message());
     }
 
@@ -41,7 +42,6 @@ public class DataAccessTest {
         var registerService = new RegisterService(userDao, authDao);
         var req1 = new RegisterRequest("a", "p", "a@a.com");
         var res1 = registerService.register(req1);
-
         var req2 = new RegisterRequest("a", "pp", "aa@aa.com");
         //var res2 = registerService.register(req2);
 
@@ -53,10 +53,8 @@ public class DataAccessTest {
         var userDAO = new UserDAOMemory();
         var authDAO = new AuthDAOMemory();
         var loginService = new LoginService(userDAO, authDAO);
-
-        var currentUser = new UserData("a", "p", "email");
+        var currentUser = new UserData("a", "p", "a@a.com");
         userDAO.addUser(currentUser);
-
         var req = new LoginRequest("a", "p");
         var res = loginService.login(req);
 
@@ -71,10 +69,8 @@ public class DataAccessTest {
         var userDAO = new UserDAOMemory();
         var authDAO = new AuthDAOMemory();
         var loginService = new LoginService(userDAO, authDAO);
-
-        var currentUser = new UserData("a", "p", "email");
+        var currentUser = new UserData("a", "p", "a@a.com");
         userDAO.addUser(currentUser);
-
         var wrongPassword = new LoginRequest("a", "wrongPass");
 
         Assertions.assertThrows(ResponseException.class, () -> loginService.login(wrongPassword));
@@ -84,10 +80,8 @@ public class DataAccessTest {
     public void logoutUserSuccess() throws ResponseException, DataAccessException {
         var authDAO = new AuthDAOMemory();
         var logoutService = new LogoutService(authDAO);
-
         var authToken = "1234";
         authDAO.createAuth(new AuthData(authToken, "a"));
-
         var logoutRequest = new LogoutRequest(authToken);
         var logoutResult = logoutService.logout(logoutRequest);
 
@@ -99,7 +93,6 @@ public class DataAccessTest {
     public void logoutWrongAuthToken() {
         var authDAO = new AuthDAOMemory();
         var logoutService = new LogoutService(authDAO);
-
         var wrongAuthToken = "wrongToken";
         var logoutRequest = new LogoutRequest(wrongAuthToken);
 
@@ -114,7 +107,6 @@ public class DataAccessTest {
         var createGameService = new CreateGameService(authDAO, gameDAO);
         var authData = new AuthData("token1", "username1");
         authDAO.createAuth(authData);
-
         var createGameReq = new CreateGameRequest("token1", "Game1");
         var createGameRes = createGameService.createGame(createGameReq);
 
@@ -126,7 +118,6 @@ public class DataAccessTest {
         var authDAO = new AuthDAOMemory();
         var gameDAO = new GameDAOMemory();
         var createGameService = new CreateGameService(authDAO, gameDAO);
-
         var wrongAuthToken = new CreateGameRequest("wrongToken", "Game1");
 
         Assertions.assertThrows(ResponseException.class, () -> createGameService.createGame(wrongAuthToken));
@@ -185,7 +176,6 @@ public class DataAccessTest {
         var joinGameService = new JoinGameService(authDAO, gameDAO);
         var game = new GameData(1, "game1", "username1", null, null);
         gameDAO.createGame(game);
-
         var joinRequest = new JoinGameRequest("wrongToken", "white", 1);
 
         Assertions.assertThrows(ResponseException.class, () -> joinGameService.joinGame(joinRequest));

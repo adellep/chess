@@ -45,7 +45,7 @@ public class AuthDAOMySql implements AuthDAO {
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE auth";
+        var statement = "DELETE FROM auth";
         DatabaseManager.executeUpdate(statement);
     }
 

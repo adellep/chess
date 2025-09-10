@@ -11,6 +11,7 @@ import results.LoginResult;
 
 import java.util.Objects;
 import java.util.UUID;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class LoginService {
 
@@ -26,7 +27,7 @@ public class LoginService {
         try {
             UserData foundUser = userDAO.getUser(request.username());
 
-            if (foundUser == null || !Objects.equals(foundUser.password(), request.password())) {
+            if (foundUser == null || !BCrypt.checkpw(request.password(), foundUser.password())) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
 
@@ -40,9 +41,7 @@ public class LoginService {
             throw new ResponseException(500, ex.getMessage());
         }
     }
-
     public static String generateToken() {
         return UUID.randomUUID().toString();
     }
-
 }

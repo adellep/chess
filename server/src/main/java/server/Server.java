@@ -6,6 +6,8 @@ import requests.*;
 import service.*;
 import spark.*;
 
+import java.util.Map;
+
 public class Server {
 
     private final UserDAO userDao;
@@ -22,16 +24,12 @@ public class Server {
             throw new RuntimeException("Failed to initialize database connections", ex);
         }
     }
-    //this.userDao = new UserDAOMemory();
-    //this.gameDAO = new GameDAOMemory();
-    //this.authDAO = new AuthDAOMemory();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
-        // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::createUser);
         Spark.delete("/db", this::clear);
         Spark.post("/session", this::loginUser);
@@ -41,7 +39,7 @@ public class Server {
         Spark.put("/game", this::joinGame);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
-        //This line initializes the server and can be removed once you have a functioning endpoint 
+        //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
 
         Spark.awaitInitialization();
@@ -89,9 +87,7 @@ public class Server {
 
     private String logoutUser(Request req, Response res) throws ResponseException {
         var g = new Gson();
-        //var logoutRequest = g.fromJson(req.headers(), LogoutRequest.class);
         String authToken = req.headers("Authorization");
-
         var logoutRequest = new LogoutRequest(authToken);
         var logoutService = new LogoutService(this.authDAO);
         var logoutResult = logoutService.logout(logoutRequest);
@@ -102,30 +98,20 @@ public class Server {
 
     private String createNewGame(Request req, Response res) throws ResponseException {
         var g = new Gson();
-
         String authToken = req.headers("Authorization");
-        String gameName = req.body();
-        //String gameName = "game1";
-        var createGameRequest = new CreateGameRequest(authToken, gameName);
+        var createRequestData = g.fromJson(req.body(), CreateGameRequest.class);
+        String gameName = createRequestData.gameName();
+        var completeRequest = new CreateGameRequest(authToken, gameName);
         var createGameService = new CreateGameService(this.authDAO, this.gameDAO);
+        var createGameResult = createGameService.createGame(completeRequest);
 
-        try {
-            var createGameResult = createGameService.createGame(createGameRequest);
-
-            res.status(200);
-            return g.toJson(createGameResult);
-
-        } catch (ResponseException ex) {
-            res.status(ex.statusCode());
-            return g.toJson(new ResultMessage(ex.getMessage()));
-        }
+        res.status(200);
+        return g.toJson(createGameResult);
     }
 
     private String listAllGames(Request req, Response res) throws ResponseException, DataAccessException {
         var g = new Gson();
-
         String authToken = req.headers("Authorization");
-
         var listGamesService = new ListGamesService(this.authDAO, this.gameDAO);
 
         try {
@@ -142,7 +128,6 @@ public class Server {
 
     private String joinGame(Request req, Response res) throws ResponseException {
         var g = new Gson();
-
         String authToken = req.headers("Authorization");
         var body = g.fromJson(req.body(), JoinGameRequest.class);
         var joinGameService = new JoinGameService(this.authDAO, this.gameDAO);

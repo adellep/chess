@@ -9,7 +9,11 @@ import java.util.List;
 
 import static dataaccess.DatabaseManager.executeUpdate;
 
+import com.google.gson.Gson;
+
 public class GameDAOMySql implements GameDAO {
+
+    private final Gson gson = new Gson();
 
     public GameDAOMySql() throws DataAccessException {
         configureDatabase();
@@ -17,25 +21,18 @@ public class GameDAOMySql implements GameDAO {
 
     @Override
     public GameData createGame(GameData gameData) throws DataAccessException {
-        var statement = "INSERT INTO game (gameName, gameState) VALUES (?, ?)";
-        DatabaseManager.executeUpdate(statement, gameData.gameName(), "{}");
+        var statement = "INSERT INTO game (gameName, game) VALUES (?, ?)";
+        String gameJson = gson.toJson(gameData.game());
 
-        var getLastID = "SELECT LAST_INSERT_ID()";
-        try (var conn = DatabaseManager.getConnection();
-             var ps = conn.prepareStatement(getLastID);
-             var rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return new GameData(
-                        rs.getInt(1),
-                        gameData.gameName(),
-                        null, null,
-                        new ChessGame()
-                );
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException("Error creating game: " + ex.getMessage());
-        }
-        return null;
+        int newGameID = DatabaseManager.executeUpdate(statement, gameData.gameName(), gameJson);
+
+        return new GameData(
+                newGameID,
+                gameData.gameName(),
+                null,
+                null,
+                gameData.game()
+        );
     }
 
     public GameData getGame(int gameID) throws DataAccessException {
@@ -45,12 +42,14 @@ public class GameDAOMySql implements GameDAO {
             ps.setInt(1, gameID);
             try (var rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    String gameJson = rs.getString("game");
+                    ChessGame game = gson.fromJson(gameJson, ChessGame.class);
                     return new GameData(
                             rs.getInt("gameID"),
                             rs.getString("gameName"),
                             rs.getString("whiteUsername"),
                             rs.getString("blackUsername"),
-                            new ChessGame()
+                            game
                     );
                 }
             }
@@ -69,12 +68,14 @@ public class GameDAOMySql implements GameDAO {
              var ps = conn.prepareStatement(statement);
              var rs = ps.executeQuery()) {
             while (rs.next()) {
+                String gameJson = rs.getString("game");
+                ChessGame game = gson.fromJson(gameJson, ChessGame.class);
                 games.add(new GameData(
                         rs.getInt("gameID"),
                         rs.getString("gameName"),
                         rs.getString("whiteUsername"),
                         rs.getString("blackUsername"),
-                        new ChessGame()
+                        game
                 ));
             }
         } catch (SQLException ex) {
@@ -109,15 +110,9 @@ public class GameDAOMySql implements GameDAO {
         executeUpdate(statement, username, gameID);
     }
 
-//    @Override
-//    public void deleteGame(int gameID) throws DataAccessException {
-//        var statement = "DELETE FROM game WHERE gameID=?";
-//        DatabaseManager.executeUpdate(statement, gameID);
-//    }
-
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE game";
+        var statement = "DELETE FROM game";
         DatabaseManager.executeUpdate(statement);
     }
 
